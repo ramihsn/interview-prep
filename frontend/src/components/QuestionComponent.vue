@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue'
 import type { QuestionType } from '../types'
 
 const props = defineProps<{ question: QuestionType }>()
+const baseURL = import.meta.env.VITE_BASE_URL
 const markAsDone = ref(false)
 const isLoading = ref(false)
 
@@ -19,10 +20,7 @@ async function changeQuestionState(questionId: number, newState: string) {
   const requestParams = { method: 'POST', headers }
 
   try {
-    const res = await fetch(
-      `http://127.0.0.1:6970/api/v1/questions/${questionId}/${newState}`,
-      requestParams,
-    )
+    const res = await fetch(`${baseURL}/api/v1/questions/${questionId}/${newState}`, requestParams)
     if (!res.ok) {
       throw new Error('Network response was not ok')
     }

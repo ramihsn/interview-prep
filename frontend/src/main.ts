@@ -4,4 +4,12 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
-createApp(App).use(router).mount('#app')
+// /* import the fontawesome core library */
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faFileCsv, faFileCode, faFileExcel } from '@fortawesome/free-solid-svg-icons'
+
+// /* add icons to the library */
+library.add([faFileCsv, faFileCode, faFileExcel])
+
+createApp(App).component('font-awesome-icon', FontAwesomeIcon).use(router).mount('#app')

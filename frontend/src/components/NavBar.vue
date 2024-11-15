@@ -35,6 +35,12 @@ console.log(pageName.value)
           class="btn btn-ghost"
           >Questions</a
         >
+        <a
+          @click="$router.push({ name: 'job' })"
+          :class="{ shadow: pageName !== 'job' }"
+          class="btn btn-ghost"
+          >Job</a
+        >
 
         <div class="btn btn-ghost" @click="$emit('setTheme', toggleTheme(props.theme))">
           <img
