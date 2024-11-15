@@ -1,0 +1,9 @@
+{
+    "flake8.args": ["--max-line-length=120"],
+    "files.exclude": {
+        "**/.git": true,
+        "**/venv": true,
+        "**/.venv": true,
+        "**/__pycache__": true,
+    }
+}
