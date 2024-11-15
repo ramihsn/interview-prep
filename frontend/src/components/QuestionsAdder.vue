@@ -2,10 +2,37 @@
 import { ref, defineEmits } from 'vue'
 
 import FileUploader from './FileUploader.vue'
+import type { QuestionType } from '../types'
 
-defineEmits(['close'])
-
+const emit = defineEmits(['questionAdded', 'fileUploaded'])
+const baseURL = import.meta.env.VITE_BASE_URL
+const topic = ref('')
+const difficulty = ref('')
 const question = ref('')
+
+const addQuestion = async () => {
+  const headers = { 'Content-Type': 'application/json' }
+  const requestParams = {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      topic: topic.value,
+      difficulty: difficulty.value,
+      question: question.value,
+    }),
+  }
+
+  const res = await fetch(`${baseURL}/api/v1/questions`, requestParams)
+  if (!res.ok) {
+    throw new Error('Network response was not ok')
+  }
+
+  emit('questionAdded', {
+    topic: topic.value,
+    difficulty: difficulty.value,
+    question: question.value,
+  } as QuestionType)
+}
 </script>
 
 <template>
@@ -16,7 +43,12 @@ const question = ref('')
         <label class="text-nowrap">Question Topic</label>
       </th>
       <td class="w-full">
-        <input type="text" class="input w-full" placeholder="Enter Question Topic" />
+        <input
+          type="text"
+          class="input w-full"
+          v-model="topic"
+          placeholder="Enter Question Topic"
+        />
       </td>
     </tr>
     <tr>
@@ -24,7 +56,12 @@ const question = ref('')
         <label class="text-nowrap">Difficulty Level</label>
       </th>
       <td class="w-full">
-        <input type="text" class="input w-full" placeholder="Enter Difficulty Level" />
+        <input
+          type="text"
+          class="input w-full"
+          v-model="difficulty"
+          placeholder="Enter Difficulty Level"
+        />
       </td>
     </tr>
     <tr>
@@ -43,7 +80,7 @@ const question = ref('')
   </table>
 
   <div class="flex justify-end mt-2 mr-4">
-    <button class="btn btn-primary" @click="$emit('close', question)">Add Question</button>
+    <button class="btn btn-primary" @click="addQuestion">Add Question</button>
   </div>
 
   <div class="flex items-center my-4">

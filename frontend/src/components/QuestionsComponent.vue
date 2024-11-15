@@ -6,13 +6,17 @@ import QuestionsAdder from './QuestionsAdder.vue'
 import type { QuestionType } from '../types'
 
 const baseURL = import.meta.env.VITE_BASE_URL
-const addNewQuestion = ref(true) // TODO: change to false
+const addNewQuestion = ref(false)
 const loading = ref<boolean>(true)
 const questions = ref<QuestionType[]>([])
 
 const Question = defineAsyncComponent(() => import('./QuestionComponent.vue'))
 
 onMounted(async () => {
+  await fetchQuestions()
+})
+
+async function fetchQuestions() {
   const res = await fetch(`${baseURL}/api/v1/questions`, {
     method: 'GET',
     headers: {
@@ -21,13 +25,20 @@ onMounted(async () => {
   })
   questions.value = await res.json()
   loading.value = false
-})
+}
+
+function onQuestionAdded(newQuestion: QuestionType) {
+  console.log(newQuestion)
+  questions.value.push(newQuestion)
+  addNewQuestion.value = false
+}
+function onQuestionsAdded() {}
 </script>
 
 <template>
   <Teleport to=".question-adder" v-if="addNewQuestion">
     <ModuleComponent @close="addNewQuestion = false">
-      <QuestionsAdder @close="addNewQuestion = false" />
+      <QuestionsAdder @questionAdded="onQuestionAdded" @fileUploaded="onQuestionsAdded" />
     </ModuleComponent>
   </Teleport>
 
