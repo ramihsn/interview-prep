@@ -1,14 +1,17 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+import { ref } from 'vue'
 import { RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+
+import NavBar from './components/NavBar.vue'
+import { Theme } from './themes'
+
+const theme = ref(Theme.DARK)
+const onThemeSet = (newTheme: Theme) => (theme.value = newTheme)
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <RouterView />
+  <main :data-theme="theme">
+    <NavBar @setTheme="onThemeSet" :theme="theme" />
+    <RouterView />
+  </main>
 </template>
