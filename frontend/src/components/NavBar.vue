@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { defineProps, defineEmits, computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 import { isDarkTheme, toggleTheme } from '@/themes'
 
 defineEmits(['setTheme'])
+const router = useRoute()
 const props = defineProps(['theme'])
 const isDark = computed(() => isDarkTheme(props.theme))
-const isQuestionsPage = computed(() => window.location.pathname === '/')
+const pageName = computed(() => router.name)
+console.log(pageName.value)
 </script>
 
 <template>
@@ -22,9 +25,15 @@ const isQuestionsPage = computed(() => window.location.pathname === '/')
       <div class="flex items-center space-x-0">
         <a
           @click="$router.push({ name: 'home' })"
-          :class="{ shadow: isQuestionsPage }"
+          :class="{ shadow: pageName !== 'home' }"
           class="btn btn-ghost"
           >Home</a
+        >
+        <a
+          @click="$router.push({ name: 'questions' })"
+          :class="{ shadow: pageName !== 'questions' }"
+          class="btn btn-ghost"
+          >Questions</a
         >
 
         <div class="btn btn-ghost" @click="$emit('setTheme', toggleTheme(props.theme))">
