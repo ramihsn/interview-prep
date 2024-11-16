@@ -7,9 +7,9 @@ import router from './router'
 // /* import the fontawesome core library */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faFileCsv, faFileCode, faFileExcel } from '@fortawesome/free-solid-svg-icons'
+import { faFileCsv, faFileCode, faFileExcel, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 
 // /* add icons to the library */
-library.add([faFileCsv, faFileCode, faFileExcel])
+library.add([faFileCsv, faFileCode, faFileExcel, faTrashCan])
 
 createApp(App).component('font-awesome-icon', FontAwesomeIcon).use(router).mount('#app')

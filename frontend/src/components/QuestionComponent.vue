@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import type { QuestionType } from '../types'
 
+defineEmits(['delete'])
 const props = defineProps<{ question: QuestionType }>()
 const baseURL = import.meta.env.VITE_BASE_URL
 const markAsDone = ref(false)
@@ -45,6 +47,13 @@ onMounted(() => {
     class="card bg-primary text-primary-content shadow custom relative"
     :class="{ done: markAsDone }"
   >
+    <FontAwesomeIcon
+      class="absolute bottom-2 right-2 mb-3 mr-3 cursor-pointer hover:text-red-500"
+      size="xl"
+      icon="trash-can"
+      @click="$emit('delete', question.id)"
+    />
+
     <div class="card-body">
       <h2 class="card-title">
         <strong>Topic: {{ question.topic }}</strong>

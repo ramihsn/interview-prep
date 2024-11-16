@@ -27,11 +27,8 @@ const addQuestion = async () => {
     throw new Error('Network response was not ok')
   }
 
-  emit('questionAdded', {
-    topic: topic.value,
-    difficulty: difficulty.value,
-    question: question.value,
-  } as QuestionType)
+  const questionCreated: QuestionType = await res.json()
+  emit('questionAdded', questionCreated)
 }
 </script>
 

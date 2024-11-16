@@ -33,6 +33,20 @@ function onQuestionAdded(newQuestion: QuestionType) {
   addNewQuestion.value = false
 }
 function onQuestionsAdded() {}
+
+async function onDelete(questionId: number) {
+  console.log('Remove Question with ID:', questionId)
+  const res = await fetch(`${baseURL}/api/v1/questions/${questionId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (res.ok) {
+    questions.value = questions.value.filter((q) => q.id !== questionId)
+  }
+}
 </script>
 
 <template>
@@ -52,7 +66,7 @@ function onQuestionsAdded() {}
   </div>
 
   <div v-else-if="questions.length > 0" class="pt-4 max-w-7xl w-full mx-auto container">
-    <Question class="mb-4" v-for="q in questions" :key="q.id" :question="q" />
+    <Question class="mb-4" v-for="q in questions" :key="q.id" :question="q" @delete="onDelete" />
   </div>
 
   <div v-else>
