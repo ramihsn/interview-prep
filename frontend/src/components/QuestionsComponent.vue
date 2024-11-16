@@ -50,60 +50,97 @@ async function onDelete(questionId: number) {
 </script>
 
 <template>
-  <Teleport to=".question-adder" v-if="addNewQuestion">
-    <ModuleComponent @close="addNewQuestion = false">
-      <QuestionsAdder @questionAdded="onQuestionAdded" @fileUploaded="onQuestionsAdded" />
-    </ModuleComponent>
-  </Teleport>
+  <div class="koko">
+    <Teleport to=".question-adder" v-if="addNewQuestion">
+      <ModuleComponent @close="addNewQuestion = false">
+        <QuestionsAdder @questionAdded="onQuestionAdded" @fileUploaded="onQuestionsAdded" />
+      </ModuleComponent>
+    </Teleport>
 
-  <div v-if="loading" class="pt-4 max-w-7xl w-full mx-auto container">
-    <Question
-      v-for="i in 3"
-      :key="i"
-      class="mb-4 animate-pulse loading-question"
-      :question="{ id: i, topic: '...', difficulty: '...', question: 'Loading...' }"
-    />
-  </div>
+    <div v-if="loading" class="pt-4 max-w-7xl w-full mx-auto custom-container">
+      <Question
+        v-for="i in 3"
+        :key="i"
+        class="mb-4 animate-pulse loading-question"
+        :question="{ id: i, topic: '...', difficulty: '...', question: 'Loading...' }"
+      />
+    </div>
 
-  <div v-else-if="questions.length > 0" class="pt-4 max-w-7xl w-full mx-auto container">
-    <Question class="mb-4" v-for="q in questions" :key="q.id" :question="q" @delete="onDelete" />
-  </div>
+    <div v-else-if="questions.length > 0" class="pt-4 max-w-7xl w-full mx-auto custom-container">
+      <Question class="mb-4" v-for="q in questions" :key="q.id" :question="q" @delete="onDelete" />
+    </div>
 
-  <div v-else>
-    <div class="wrapper bg-primary text-primary-content">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 rounded">
-        <div role="alert" class="alert">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            class="stroke-info h-6 w-6 shrink-0"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-          <span class="text-primary-content">
-            It's lonely here. Add questions to get started.
-          </span>
-        </div>
+    <div
+      v-else
+      class="wrapper bg-primary text-primary-content flex flex-col items-center justify-center p-6 custom-container"
+      style="min-height: calc(100vh - var(--header-height))"
+    >
+      <!-- Alert Message -->
+      <div
+        class="flex items-center bg-blue-100 text-blue-800 px-6 py-4 mb-6 rounded-lg shadow-md max-w-lg text-center mb-12"
+        role="alert"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          class="stroke-current h-6 w-6 mr-3"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span> <strong>It's lonely here.</strong> Add questions to get started. </span>
+      </div>
+
+      <!-- Questions Adder Component -->
+      <div class="w-full max-w-2xl">
+        <QuestionsAdder @questionAdded="onQuestionAdded" @fileUploaded="onQuestionsAdded" />
       </div>
     </div>
-  </div>
 
-  <div class="fixed bottom-4 right-4">
-    <button @click="addNewQuestion = true" class="btn btn-circle btn-primary text-4xl pb-2">
-      +
-    </button>
+    <!-- <div
+    v-else
+    class="wrapper bg-primary text-primary-content flex flex-col items-center justify-center min-h-screen px-6"
+  >
+    <div
+      class="flex items-center bg-blue-100 text-blue-800 px-6 py-4 mb-6 rounded-lg shadow-md max-w-lg text-center"
+      role="alert"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="stroke-current h-6 w-6 mr-3"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span> <strong>It's lonely here.</strong> Add questions to get started. </span>
+    </div>
+
+    <div class="w-9/12">
+      <QuestionsAdder @questionAdded="onQuestionAdded" @fileUploaded="onQuestionsAdded" />
+    </div>
+  </div> -->
+
+    <div class="fixed bottom-4 right-4">
+      <button @click="addNewQuestion = true" class="btn btn-circle btn-primary text-4xl pb-2">
+        +
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.container {
-  background-color: var(--bg-base-500);
+.custom-container {
   padding-left: 10%;
   padding-right: 10%;
 
