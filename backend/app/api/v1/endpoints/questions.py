@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends, status, Response
+from fastapi import APIRouter, HTTPException, Depends, status, Response, UploadFile, File
 
 from app import schemas, services, db
+from app.core import file_readers
 
 router = APIRouter()
 
@@ -46,3 +47,16 @@ async def mark_question_as_answered(question_id: int, db=Depends(db.session.get_
 async def mark_question_as_unanswered(question_id: int, db=Depends(db.session.get_db)) -> None:
     if not await services.questions.unanswered_question(db, question_id):
         raise HTTPException(status_code=404, detail="Question not found")
+
+
+@router.post('/upload-file')
+async def upload_file(file_type: str, file: UploadFile = File(...)):
+    try:
+        match file_type:
+            case 'csv':
+                questions = await file_readers.from_csv_file(file.file)
+                return questions
+            case _:
+                raise HTTPException(status_code=400, detail="File type not supported")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
