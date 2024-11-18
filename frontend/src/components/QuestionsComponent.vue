@@ -98,7 +98,11 @@ async function onDelete(questionId: number) {
 
       <!-- Questions Adder Component -->
       <div class="w-full max-w-2xl">
-        <QuestionsAdder @questionAdded="onQuestionAdded" @fileUploaded="onQuestionsAdded" />
+        <QuestionsAdder
+          @questionAdded="onQuestionAdded"
+          @fileUploaded="onQuestionsAdded"
+          :embedded="false"
+        />
       </div>
     </div>
 

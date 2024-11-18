@@ -5,6 +5,7 @@ import FileUploader from './FileUploader.vue'
 import type { QuestionType } from '../types'
 
 const emit = defineEmits(['questionAdded', 'fileUploaded'])
+defineProps({ embedded: { type: Boolean, default: true } })
 const baseURL = import.meta.env.VITE_BASE_URL
 const topic = ref('')
 const difficulty = ref('')
@@ -77,7 +78,13 @@ const addQuestion = async () => {
   </table>
 
   <div class="flex justify-end mt-2 mr-4">
-    <button class="btn btn-primary" @click="addQuestion">Add Question</button>
+    <button
+      class="btn"
+      :class="{ 'btn-primary': embedded, 'btn-secondary': !embedded }"
+      @click="addQuestion"
+    >
+      Add Question
+    </button>
   </div>
 
   <div class="flex items-center my-4">
