@@ -1,6 +1,6 @@
 import sqlmodel
 
-from ..models.questions import Question as QuestionRead  # noqa: F401
+from .answers import AnswerRead
 
 
 class QuestionBase(sqlmodel.SQLModel):
@@ -8,6 +8,12 @@ class QuestionBase(sqlmodel.SQLModel):
     difficulty: str
     question: str
     answered: bool = False
+
+    answer: AnswerRead | None
+
+
+class QuestionRead(QuestionBase):
+    id: int
 
 
 class QuestionCreate(QuestionBase):

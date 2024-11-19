@@ -12,8 +12,7 @@ async def add_question(db: Session, question: QuestionCreate) -> QuestionRead:
 
 
 async def get_question(db: Session, question_id: int) -> QuestionRead | None:
-    print(q := db.get(QuestionModel, question_id))
-    return q
+    return db.get(QuestionModel, question_id)
 
 
 async def get_questions(db: Session, skip: int = 0, limit: int = 100) -> list[QuestionRead]:

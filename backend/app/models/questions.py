@@ -1,8 +1,6 @@
 import sqlmodel
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from app.models.answers import Answer
+from app.models.answers import Answer
 
 
 class Question(sqlmodel.SQLModel, table=True):
@@ -16,4 +14,4 @@ class Question(sqlmodel.SQLModel, table=True):
     answered: bool = sqlmodel.Field(default=False)
 
     # Relationship to Answer with nullable=True
-    answer: "Answer" = sqlmodel.Relationship(back_populates="question")
+    answer: Answer | None = sqlmodel.Relationship(back_populates="question", cascade_delete=True)

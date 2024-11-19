@@ -12,7 +12,7 @@ class Answer(sqlmodel.SQLModel, table=True):
 
     answer: str = sqlmodel.Field()
     review: str = sqlmodel.Field()
-    rating: str = sqlmodel.Field()
+    rating: float = sqlmodel.Field()
 
     # Relationship to Question
     question_id: int = sqlmodel.Field(foreign_key="questions.id")
