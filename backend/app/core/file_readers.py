@@ -1,3 +1,4 @@
+from openpyxl import load_workbook
 from typing import BinaryIO
 from io import StringIO
 import json
@@ -5,6 +6,8 @@ import csv
 import re
 
 from app.schemas.questions import QuestionCreate
+
+_EXPECTED_TITLES = ['topic', 'difficulty', 'question']
 
 
 async def from_csv_file(file: BinaryIO) -> list[QuestionCreate]:
@@ -54,12 +57,41 @@ async def from_json_file(file: BinaryIO) -> list[QuestionCreate]:
 
     error_rows, questions = [], []
     for row in content:
-        if not all(key in row for key in ['topic', 'difficulty', 'question']):
+        if not all(key in row for key in _EXPECTED_TITLES):
             error_rows.append(row)
         else:
             questions.append(QuestionCreate(**row))
 
     if error_rows:
         raise ValueError(f'Invalid JSON file format, missing keys: {error_rows}')
+
+    return questions
+
+
+async def from_excel_file(file: BinaryIO) -> list[QuestionCreate]:
+    """
+    Reads an Excel file and returns a list of dictionaries, where each dictionary represents a row.
+
+    Args:
+        file: The file-like object of the uploaded Excel file.
+
+    Returns:
+        A list of dictionaries containing the Excel data.
+    """
+    # Load the Excel workbook
+    workbook = load_workbook(file)
+    sheet = workbook.active
+
+    # Check the first row for the expected column titles
+    actual_titles = [cell.value.lower() if cell.value else None for cell in sheet[1]]
+    if actual_titles != _EXPECTED_TITLES:
+        raise ValueError(
+            f"Invalid Excel file format, expected titles (first row): {', '.join(_EXPECTED_TITLES)}"
+        )
+
+    # Convert the sheet to a list of QuestionCreate objects
+    questions = []
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        questions.append(QuestionCreate(topic=row[0], difficulty=row[1], question=row[2]))
 
     return questions

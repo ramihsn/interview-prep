@@ -59,6 +59,9 @@ async def upload_file(file_type: str, file: UploadFile = File(...)):
             case 'json':
                 questions = await file_readers.from_json_file(file.file)
                 return questions
+            case 'excel':
+                questions = await file_readers.from_excel_file(file.file)
+                return questions
             case _:
                 raise HTTPException(status_code=400, detail="File type not supported")
     except ValueError as e:
