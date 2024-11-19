@@ -1,24 +1,23 @@
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from ..schemas.questions import QuestionCreate, QuestionRead
 from ..models.questions import Question as QuestionModel
 
 
 async def add_question(db: Session, question: QuestionCreate) -> QuestionRead:
-    db_item = QuestionModel(**question.model_dump())
-    db.add(db_item)
+    db.add(question)
     db.commit()
-    db.refresh(db_item)
-    return QuestionRead.model_validate(db_item)
+    db.refresh(question)
+    return question
 
 
 async def get_question(db: Session, question_id: int) -> QuestionRead | None:
-    if db_item := db.query(QuestionModel).filter(QuestionModel.id == question_id).first():
-        return QuestionRead.model_validate(db_item)
+    print(q := db.get(QuestionModel, question_id))
+    return q
 
 
 async def get_questions(db: Session, skip: int = 0, limit: int = 100) -> list[QuestionRead]:
-    q = db.query(QuestionModel)
+    q = select(QuestionModel)
 
     if skip and skip > 0:
         q = q.offset(skip)
@@ -26,44 +25,50 @@ async def get_questions(db: Session, skip: int = 0, limit: int = 100) -> list[Qu
     if limit and limit > 0:
         q = q.limit(limit)
 
-    return [QuestionRead.model_validate(db_item) for db_item in q.all()]
+    return [QuestionRead.model_validate(db_item) for db_item in db.exec(q).all()]
 
 
 async def update_question(db: Session, question_id: int, question: QuestionCreate
                           ) -> QuestionRead | None:
-    if db_item := db.query(QuestionModel).filter(QuestionModel.id == question_id).first():
-        for key, value in question.model_dump().items():
-            setattr(db_item, key, value)
+    if question := db.get(QuestionModel, question_id):
+        for field, value in question.model_dump().items():
+            setattr(question, field, value)
+
         db.commit()
-        db.refresh(db_item)
-        return QuestionRead.model_validate(db_item)
+        db.refresh(question)
+        return question
 
 
 async def delete_question(db: Session, question_id: int) -> QuestionRead | None:
-    if db_item := db.query(QuestionModel).filter(QuestionModel.id == question_id).first():
-        db.delete(db_item)
+    if question := db.get(QuestionModel, question_id):
+        db.delete(question)
         db.commit()
-        return QuestionRead.model_validate(db_item)
+        return question
+
+
+async def _set_question_answered(db: Session, question_id: int, answered: bool) -> QuestionRead | None:
+    if question := db.get(QuestionModel, question_id):
+        question.answered = answered
+        db.commit()
+        db.refresh(question)
+        return question
 
 
 async def answer_question(db: Session, question_id: int) -> QuestionRead | None:
-    if db_item := db.query(QuestionModel).filter(QuestionModel.id == question_id).first():
-        db_item.answered = True
-        db.commit()
-        db.refresh(db_item)
-        return QuestionRead.model_validate(db_item)
+    return await _set_question_answered(db, question_id, True)
 
 
 async def unanswered_question(db: Session, question_id: int) -> QuestionRead | None:
-    if db_item := db.query(QuestionModel).filter(QuestionModel.id == question_id).first():
-        db_item.answered = False
-        db.commit()
-        db.refresh(db_item)
-        return QuestionRead.model_validate(db_item)
+    return await _set_question_answered(db, question_id, False)
 
 
 async def get_answered_questions(db: Session, skip: int = 0, limit: int = 100) -> list[QuestionRead]:
-    return [
-        QuestionRead.model_validate(db_item) for db_item in
-        db.query(QuestionModel).filter(QuestionModel.answered == True).offset(skip).limit(limit).all()  # noqa:E712
-    ]
+    q = select(QuestionModel).where(QuestionModel.answered == True)  # noqa:E712
+
+    if skip and skip > 0:
+        q = q.offset(skip)
+
+    if limit and limit > 0:
+        q = q.limit(limit)
+
+    return [QuestionRead.model_validate(db_item) for db_item in db.exec(q).all()]
