@@ -9,7 +9,7 @@ class QuestionBase(sqlmodel.SQLModel):
     question: str
     answered: bool = False
 
-    answer: AnswerRead | None
+    answer: AnswerRead | None = None
 
 
 class QuestionRead(QuestionBase):

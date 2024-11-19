@@ -5,14 +5,15 @@ from ..models.questions import Question as QuestionModel
 
 
 async def add_question(db: Session, question: QuestionCreate) -> QuestionRead:
-    db.add(question)
+    question_module = QuestionModel(**question.model_dump())
+    db.add(question_module)
     db.commit()
-    db.refresh(question)
-    return question
+    db.refresh(question_module)
+    return QuestionRead.model_validate(question_module)
 
 
 async def get_question(db: Session, question_id: int) -> QuestionRead | None:
-    return db.get(QuestionModel, question_id)
+    return QuestionRead.model_validate(db.get(QuestionModel, question_id))
 
 
 async def get_questions(db: Session, skip: int = 0, limit: int = 100) -> list[QuestionRead]:
@@ -24,25 +25,25 @@ async def get_questions(db: Session, skip: int = 0, limit: int = 100) -> list[Qu
     if limit and limit > 0:
         q = q.limit(limit)
 
-    return [QuestionRead.model_validate(db_item) for db_item in db.exec(q).all()]
+    return [QuestionRead.model_validate(i) for i in db.exec(q).all()]
 
 
 async def update_question(db: Session, question_id: int, question: QuestionCreate
                           ) -> QuestionRead | None:
-    if question := db.get(QuestionModel, question_id):
+    if old_question := db.get(QuestionModel, question_id):
         for field, value in question.model_dump().items():
-            setattr(question, field, value)
+            setattr(old_question, field, value)
 
         db.commit()
-        db.refresh(question)
-        return question
+        db.refresh(old_question)
+        return QuestionRead.model_validate(old_question)
 
 
 async def delete_question(db: Session, question_id: int) -> QuestionRead | None:
     if question := db.get(QuestionModel, question_id):
         db.delete(question)
         db.commit()
-        return question
+        return QuestionRead.model_validate(question)
 
 
 async def _set_question_answered(db: Session, question_id: int, answered: bool) -> QuestionRead | None:
@@ -50,7 +51,7 @@ async def _set_question_answered(db: Session, question_id: int, answered: bool) 
         question.answered = answered
         db.commit()
         db.refresh(question)
-        return question
+        return QuestionRead.model_validate(question)
 
 
 async def answer_question(db: Session, question_id: int) -> QuestionRead | None:
@@ -70,4 +71,4 @@ async def get_answered_questions(db: Session, skip: int = 0, limit: int = 100) -
     if limit and limit > 0:
         q = q.limit(limit)
 
-    return [QuestionRead.model_validate(db_item) for db_item in db.exec(q).all()]
+    return [QuestionRead.model_validate(i) for i in db.exec(q).all()]
