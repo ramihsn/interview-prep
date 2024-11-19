@@ -1,11 +1,9 @@
-from pydantic import BaseModel, ConfigDict
-from typing import TYPE_CHECKING
+import sqlmodel
 
-if TYPE_CHECKING:
-    from .questions import QuestionRead
+from ..models.answers import Answer as AnswerRead  # noqa: F401
 
 
-class AnswerBase(BaseModel):
+class AnswerBase(sqlmodel.SQLModel):
     answer: str
     review: str
     rating: float
@@ -14,13 +12,6 @@ class AnswerBase(BaseModel):
 
 class AnswerCreate(AnswerBase):
     pass
-
-
-class AnswerRead(AnswerBase):
-    id: int
-    answer: 'QuestionRead'
-
-    model_config = ConfigDict(from_attributes=True)
 
 
 class AnswerUpdate(AnswerBase):

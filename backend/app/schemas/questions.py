@@ -1,10 +1,9 @@
-from pydantic import BaseModel, ConfigDict
-from typing import Optional
+import sqlmodel
 
-from .answers import AnswerRead
+from ..models.questions import Question as QuestionRead  # noqa: F401
 
 
-class QuestionBase(BaseModel):
+class QuestionBase(sqlmodel.SQLModel):
     topic: str
     difficulty: str
     question: str
@@ -13,13 +12,6 @@ class QuestionBase(BaseModel):
 
 class QuestionCreate(QuestionBase):
     pass
-
-
-class QuestionRead(QuestionBase):
-    id: int
-
-    answer: Optional[AnswerRead] = None
-    model_config = ConfigDict(from_attributes=True)
 
 
 class QuestionUpdate(QuestionBase):

@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 
 from ..schemas.questions import QuestionCreate, QuestionRead
 from ..models.questions import Question as QuestionModel
