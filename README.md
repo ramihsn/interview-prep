@@ -61,6 +61,7 @@ uvicorn main:app [--host <HOST>] [--port <PORT>] [--reload]
 - [x] Add support for excel file as an input
 - [x] Replace SQLAlchemy with SQLModel
 - [ ] Improve the UI/UX of the frontend
+- [ ] Add the answer to the question card 
 - [ ] Write unit tests for frontend
 - [ ] Write unit tests for backend
 - [ ] Write e2e tests
