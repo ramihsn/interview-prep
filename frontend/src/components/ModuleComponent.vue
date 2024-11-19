@@ -18,7 +18,7 @@ onUnmounted(() => {
 
 <template>
   <div class="backdrop" @click.self="$emit('close')">
-    <div class="module w-9/12">
+    <div class="module w-9/12" @click.self="$emit('close')">
       <slot />
     </div>
   </div>
@@ -28,7 +28,7 @@ onUnmounted(() => {
 .backdrop {
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
-  top: 0;
+  top: 7%;
   left: 0;
   width: 100%;
   height: 100%;
@@ -38,24 +38,7 @@ onUnmounted(() => {
 }
 
 .module {
-  background-color: white;
   padding: 1rem;
   border-radius: 10px;
 }
-
-/* .backdrop {
-  top: 0;
-  position: fixed;
-  background: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
-}
-
-.module {
-  border-radius: 10px;
-  width: 500px;
-  padding: 20px;
-  margin: 100px auto;
-  background: white;
-} */
 </style>

@@ -37,6 +37,14 @@ async function changeQuestionState(questionId: number, newState: string) {
     isLoading.value = false // Reset loading after API call
   }
 }
+
+function onSubmitChanges(newQuestion: QuestionType) {
+  editQuestion.value = false
+  console.log('New Question:', newQuestion)
+  // TODO: see what to do next with the new question
+  // update the backend with the new question
+  // update the question values in the list of questions
+}
 </script>
 
 <template>
@@ -47,7 +55,11 @@ async function changeQuestionState(questionId: number, newState: string) {
   >
     <Teleport to=".question-module" v-if="editQuestion">
       <ModuleComponent @close="editQuestion = false">
-        <QuestionEditor />
+        <QuestionEditor
+          :question="question"
+          @close="editQuestion = false"
+          @submit="onSubmitChanges"
+        />
       </ModuleComponent>
     </Teleport>
 
