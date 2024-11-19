@@ -68,3 +68,4 @@ uvicorn app.main:app --reload
 - [ ] Optimize database queries for better performance
 - [ ] Remove SQLAlchemy and use SQLModel instead
 - [ ] Group the questions by the topic or difficulty
+- [ ] Enable editing a question
