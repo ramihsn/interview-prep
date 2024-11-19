@@ -8,6 +8,7 @@ import type { QuestionType } from '../types'
 const baseURL = import.meta.env.VITE_BASE_URL
 const addNewQuestion = ref(false)
 const loading = ref<boolean>(true)
+const hasFileUploadError = ref<string | null>(null)
 const questions = ref<QuestionType[]>([])
 
 const Question = defineAsyncComponent(() => import('./QuestionComponent.vue'))
@@ -50,13 +51,24 @@ async function onDelete(questionId: number) {
     questions.value = questions.value.filter((q) => q.id !== questionId)
   }
 }
+
+function onFileUploadedError(error: string) {
+  hasFileUploadError.value = error
+  setTimeout(() => {
+    hasFileUploadError.value = null
+  }, 3000)
+}
 </script>
 
 <template>
   <div class="koko">
     <Teleport to=".question-adder" v-if="addNewQuestion">
       <ModuleComponent @close="addNewQuestion = false">
-        <QuestionsAdder @questionAdded="onQuestionAdded" @fileUploaded="onQuestionsAdded" />
+        <QuestionsAdder
+          @questionAdded="onQuestionAdded"
+          @fileUploaded="onQuestionsAdded"
+          @fileUploadedError="onFileUploadedError"
+        />
       </ModuleComponent>
     </Teleport>
 
@@ -104,39 +116,28 @@ async function onDelete(questionId: number) {
         <QuestionsAdder
           @questionAdded="onQuestionAdded"
           @fileUploaded="onQuestionsAdded"
+          @fileUploadedError="onFileUploadedError"
           :embedded="false"
         />
       </div>
     </div>
 
-    <!-- <div
-    v-else
-    class="wrapper bg-primary text-primary-content flex flex-col items-center justify-center min-h-screen px-6"
-  >
-    <div
-      class="flex items-center bg-blue-100 text-blue-800 px-6 py-4 mb-6 rounded-lg shadow-md max-w-lg text-center"
-      role="alert"
+    <!-- Error Alert -->
+    <transition
+      name="slide-up-down"
+      enter-active-class="transition transform duration-300 ease-in-out"
+      leave-active-class="transition transform duration-300 ease-in-out"
+      enter-from-class="translate-y-full"
+      enter-to-class="translate-y-0"
+      leave-from-class="translate-y-0"
+      leave-to-class="translate-y-full"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        class="stroke-current h-6 w-6 mr-3"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span> <strong>It's lonely here.</strong> Add questions to get started. </span>
-    </div>
-
-    <div class="w-9/12">
-      <QuestionsAdder @questionAdded="onQuestionAdded" @fileUploaded="onQuestionsAdded" />
-    </div>
-  </div> -->
+      <div v-if="hasFileUploadError" class="fixed inset-x-0 bottom-0 p-4 bg-red-500 text-white">
+        <div class="flex items-center justify-between">
+          <span>{{ hasFileUploadError }}</span>
+        </div>
+      </div>
+    </transition>
 
     <div class="fixed bottom-4 right-4">
       <button @click="addNewQuestion = true" class="btn btn-circle btn-primary text-4xl pb-2">

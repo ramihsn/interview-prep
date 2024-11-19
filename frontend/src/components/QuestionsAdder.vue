@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, defineEmits } from 'vue'
+import { ref } from 'vue'
 
 import FileUploader from './FileUploader.vue'
 import type { QuestionType } from '../types'
 
-const emit = defineEmits(['questionAdded', 'fileUploaded'])
+const emit = defineEmits(['questionAdded', 'fileUploaded', 'fileUploadedError'])
 defineProps({ embedded: { type: Boolean, default: true } })
 const baseURL = import.meta.env.VITE_BASE_URL
 const topic = ref('')
@@ -36,45 +36,47 @@ const addQuestion = async () => {
 <template>
   <h2 class="text-2xl font-bold">Add New Question</h2>
   <table class="border-spacing-4 border-separate">
-    <tr>
-      <th>
-        <label class="text-nowrap">Question Topic</label>
-      </th>
-      <td class="w-full">
-        <input
-          type="text"
-          class="input w-full"
-          v-model="topic"
-          placeholder="Enter Question Topic"
-        />
-      </td>
-    </tr>
-    <tr>
-      <th>
-        <label class="text-nowrap">Difficulty Level</label>
-      </th>
-      <td class="w-full">
-        <input
-          type="text"
-          class="input w-full"
-          v-model="difficulty"
-          placeholder="Enter Difficulty Level"
-        />
-      </td>
-    </tr>
-    <tr>
-      <th>
-        <div class="text-nowrap">Question</div>
-      </th>
-      <td class="w-full">
-        <textarea
-          class="textarea h-30 w-full rounded-lg"
-          placeholder="Type your question here..."
-          v-model="question"
-          rows="3"
-        ></textarea>
-      </td>
-    </tr>
+    <tbody>
+      <tr>
+        <th>
+          <label class="text-nowrap">Question Topic</label>
+        </th>
+        <td class="w-full">
+          <input
+            type="text"
+            class="input w-full"
+            v-model="topic"
+            placeholder="Enter Question Topic"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label class="text-nowrap">Difficulty Level</label>
+        </th>
+        <td class="w-full">
+          <input
+            type="text"
+            class="input w-full"
+            v-model="difficulty"
+            placeholder="Enter Difficulty Level"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <div class="text-nowrap">Question</div>
+        </th>
+        <td class="w-full">
+          <textarea
+            class="textarea h-30 w-full rounded-lg"
+            placeholder="Type your question here..."
+            v-model="question"
+            rows="3"
+          ></textarea>
+        </td>
+      </tr>
+    </tbody>
   </table>
 
   <div class="flex justify-end mt-2 mr-4">
@@ -102,6 +104,7 @@ const addQuestion = async () => {
       icon="file-code"
       color="#9a7bab"
       @fileUploaded="(data) => $emit('fileUploaded', data)"
+      @fileUploadError="(error) => $emit('fileUploadedError', error)"
     />
     <span class="h-0.5 w-10 bg-gray-300"></span>
     <FileUploader
@@ -109,6 +112,7 @@ const addQuestion = async () => {
       icon="file-csv"
       color="#4bb25d"
       @fileUploaded="(data) => $emit('fileUploaded', data)"
+      @fileUploadError="(error) => $emit('fileUploadedError', error)"
     />
     <span class="h-0.5 w-10 bg-gray-300"></span>
     <FileUploader
@@ -116,6 +120,7 @@ const addQuestion = async () => {
       icon="file-excel"
       color="#097640"
       @fileUploaded="(data) => $emit('fileUploaded', data)"
+      @fileUploadError="(error) => $emit('fileUploadedError', error)"
     />
   </div>
 </template>

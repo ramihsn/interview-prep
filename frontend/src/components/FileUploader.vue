@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, defineProps, useTemplateRef, computed } from 'vue'
+import { ref, useTemplateRef, computed } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const baseURL = import.meta.env.VITE_BASE_URL
 const props = defineProps(['type', 'icon', 'color'])
-const emit = defineEmits(['fileUploaded'])
+const emit = defineEmits(['fileUploaded', 'fileUploadError'])
 const accept = computed(() => {
   switch (props.type) {
     case 'json':
@@ -43,6 +43,9 @@ function onFileChanged($event: Event) {
       })
         .then((res) => {
           if (!res.ok) {
+            res.json().then((data) => {
+              emit('fileUploadError', data.detail)
+            })
             throw new Error('Network response was not ok')
           }
           return res.json()
