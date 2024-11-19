@@ -1,9 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends, status, Response, UploadFile, File
+from typing import Literal
 
 from app import schemas, services, db
 from app.core import file_readers
 
 router = APIRouter()
+_INPUT_FILE_TYPES = Literal['csv', 'json', 'excel']
 
 
 @router.get('/', response_model=list[schemas.questions.QuestionRead])
@@ -50,7 +52,7 @@ async def mark_question_as_unanswered(question_id: int, db=Depends(db.session.ge
 
 
 @router.post('/upload-file')
-async def upload_file(file_type: str, file: UploadFile = File(...)):
+async def upload_file(file_type: _INPUT_FILE_TYPES, file: UploadFile = File(...)):
     try:
         match file_type:
             case 'csv':
