@@ -97,10 +97,25 @@ const addQuestion = async () => {
     <p class="text-center text-xl font-bold">Upload file of on of the following type:</p>
   </div>
   <div class="flex justify-evenly items-center w-full">
-    <FileUploader type="json" icon="file-code" color="#9a7bab" />
+    <FileUploader
+      type="json"
+      icon="file-code"
+      color="#9a7bab"
+      @fileUploaded="(data) => $emit('fileUploaded', data)"
+    />
     <span class="h-0.5 w-10 bg-gray-300"></span>
-    <FileUploader type="csv" icon="file-csv" color="#4bb25d" />
+    <FileUploader
+      type="csv"
+      icon="file-csv"
+      color="#4bb25d"
+      @fileUploaded="(data) => $emit('fileUploaded', data)"
+    />
     <span class="h-0.5 w-10 bg-gray-300"></span>
-    <FileUploader type="excel" icon="file-excel" color="#097640" />
+    <FileUploader
+      type="excel"
+      icon="file-excel"
+      color="#097640"
+      @fileUploaded="(data) => $emit('fileUploaded', data)"
+    />
   </div>
 </template>

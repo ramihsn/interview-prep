@@ -32,7 +32,10 @@ function onQuestionAdded(newQuestion: QuestionType) {
   questions.value.push(newQuestion)
   addNewQuestion.value = false
 }
-function onQuestionsAdded() {}
+function onQuestionsAdded(newQuestions: QuestionType[]) {
+  questions.value = [...questions.value, ...newQuestions]
+  addNewQuestion.value = false
+}
 
 async function onDelete(questionId: number) {
   console.log('Remove Question with ID:', questionId)
