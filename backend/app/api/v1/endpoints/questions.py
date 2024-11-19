@@ -52,19 +52,23 @@ async def mark_question_as_unanswered(question_id: int, db=Depends(db.session.ge
 
 
 @router.post('/upload-file')
-async def upload_file(file_type: _INPUT_FILE_TYPES, file: UploadFile = File(...)):
+async def upload_file(file_type: _INPUT_FILE_TYPES, file: UploadFile = File(...), db=Depends(db.session.get_db)):
+    questions: list[schemas.questions.QuestionCreate] = []
+    result: list[schemas.questions.QuestionRead] = []
     try:
         match file_type:
             case 'csv':
                 questions = await file_readers.from_csv_file(file.file)
-                return questions
             case 'json':
                 questions = await file_readers.from_json_file(file.file)
-                return questions
             case 'excel':
                 questions = await file_readers.from_excel_file(file.file)
-                return questions
             case _:
                 raise HTTPException(status_code=400, detail="File type not supported")
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+    for question in questions:
+        result.append(await services.questions.add_question(db, question))
+
+    return result
