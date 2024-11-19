@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import AnswerComponent from './AnswerComponent.vue'
 import type { QuestionType } from '../types'
 
 defineEmits(['delete'])
@@ -58,15 +59,20 @@ onMounted(() => {
       <h2 class="card-title">
         <strong>Topic: {{ question.topic }}</strong>
       </h2>
-      <p :hidden="markAsDone">
-        <strong>Difficulty Level: {{ question.difficulty }}</strong>
-      </p>
-      <p :hidden="markAsDone">
-        <strong>Question</strong>
-        <span class="ml-1">:</span>
-        <br />
-        <span>{{ question.question }}</span>
-      </p>
+      <div :hidden="markAsDone" class="mt-3">
+        <p class="pb-3">
+          <strong>Difficulty Level: {{ question.difficulty }}</strong>
+        </p>
+        <p class="pb-3">
+          <strong>Question</strong>
+          <span class="ml-1">:</span>
+          <br />
+          <span>{{ question.question }}</span>
+        </p>
+        <hr class="pb-3" />
+        <h2>Answer:</h2>
+        <AnswerComponent :answer="question.answer" />
+      </div>
     </div>
 
     <div class="card-actions">
@@ -102,9 +108,5 @@ onMounted(() => {
 
 .spinner-border {
   border-color: white transparent transparent transparent;
-}
-
-textarea {
-  transition: height 0.2s ease;
 }
 </style>
