@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
-from . import endpoints
+from . import questions, answers
 
 router = APIRouter(prefix='/v1')
-router.include_router(endpoints.router)
+router.include_router(questions.router, tags=["questions"])
+router.include_router(answers.router, tags=["answers"])

@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, status, Response  # noqa
 
 from app import schemas, services, db
 
-router = APIRouter()
+router = APIRouter(prefix='/answers')
 
 
 @router.post('/', response_model=schemas.answers.AnswerRead, status_code=status.HTTP_201_CREATED)

@@ -4,7 +4,7 @@ from typing import Literal
 from app import schemas, services, db
 from app.core import file_readers
 
-router = APIRouter()
+router = APIRouter(prefix='/questions')
 _INPUT_FILE_TYPES = Literal['csv', 'json', 'excel']
 
 
