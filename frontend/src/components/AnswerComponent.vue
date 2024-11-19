@@ -1,19 +1,11 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import type { AnswerType } from '@/types'
 
 const props = defineProps<{ answer: AnswerType | undefined }>()
 const answerText = ref<string>(props.answer?.answer || '')
 const reviewText = ref<string>(props.answer?.review || '')
 const rating = ref<number | null>(props.answer?.rating || null)
-
-onMounted(() => {
-  if (props.answer) {
-    console.log(props.answer)
-    const rating = props.answer?.rating
-    console.log('is', rating, 'Integer?', Number.isInteger(rating), typeof rating)
-  }
-})
 </script>
 
 <template>

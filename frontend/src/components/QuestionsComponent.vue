@@ -62,7 +62,7 @@ function onFileUploadedError(error: string) {
 
 <template>
   <div class="koko">
-    <Teleport to=".question-adder" v-if="addNewQuestion">
+    <Teleport to=".question-module" v-if="addNewQuestion">
       <ModuleComponent @close="addNewQuestion = false">
         <QuestionsAdder
           @questionAdded="onQuestionAdded"

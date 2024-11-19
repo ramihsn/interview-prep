@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import ModuleComponent from './ModuleComponent.vue'
+import QuestionEditor from './QuestionEditor.vue'
 import AnswerComponent from './AnswerComponent.vue'
 import type { QuestionType } from '../types'
 
@@ -10,6 +12,7 @@ const props = defineProps<{ question: QuestionType }>()
 const baseURL = import.meta.env.VITE_BASE_URL
 const markAsDone = ref(false)
 const isLoading = ref(false)
+const editQuestion = ref(false)
 
 function toggleMarkAsDone() {
   isLoading.value = true // Set loading to true before API call
@@ -34,30 +37,41 @@ async function changeQuestionState(questionId: number, newState: string) {
     isLoading.value = false // Reset loading after API call
   }
 }
-
-onMounted(() => {
-  if (props.question.id === 1) {
-    console.log(`Question with ID ${props.question.id} mounted`)
-    console.log(props.question)
-  }
-})
 </script>
 
 <template>
   <div
-    class="card bg-primary text-primary-content shadow custom relative"
+    class="card bg-primary text-primary-content shadow custom relative mb-10 pb-2"
     :class="{ done: markAsDone }"
+    :id="`question-${question.id}`"
   >
-    <FontAwesomeIcon
-      class="absolute bottom-2 right-2 mb-3 mr-3 cursor-pointer hover:text-red-500"
-      size="xl"
-      icon="trash-can"
-      @click="$emit('delete', question.id)"
-    />
+    <Teleport to=".question-module" v-if="editQuestion">
+      <ModuleComponent @close="editQuestion = false">
+        <QuestionEditor />
+      </ModuleComponent>
+    </Teleport>
+
+    <div class="absolute bottom-2 right-2 mb-5 mr-3 cursor-pointer">
+      <FontAwesomeIcon
+        size="xl"
+        icon="pen-to-square"
+        class="mr-5 hover:text-red-500"
+        @click="editQuestion = true"
+      />
+      <FontAwesomeIcon
+        size="xl"
+        icon="trash-can"
+        class="mr-3 hover:text-red-500"
+        @click="$emit('delete', question.id)"
+      />
+    </div>
 
     <div class="card-body">
       <h2 class="card-title">
-        <strong>Topic: {{ question.topic }}</strong>
+        <strong>
+          <span>Topic: </span>
+          <span>{{ question.topic }}</span>
+        </strong>
       </h2>
       <div :hidden="markAsDone" class="mt-3">
         <p class="pb-3">
@@ -75,7 +89,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="card-actions">
+    <div class="card-actions pl-3">
       <label class="btn btn-ghost">
         <input
           type="checkbox"
