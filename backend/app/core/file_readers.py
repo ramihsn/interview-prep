@@ -1,5 +1,6 @@
 from typing import BinaryIO
 from io import StringIO
+import json
 import csv
 import re
 
@@ -31,5 +32,34 @@ async def from_csv_file(file: BinaryIO) -> list[QuestionCreate]:
 
     # Convert the CSV reader to a list of QuestionCreate objects
     questions = [QuestionCreate(**row) for row in csv_reader]
+
+    return questions
+
+
+async def from_json_file(file: BinaryIO) -> list[QuestionCreate]:
+    """
+    Reads a JSON file and returns a list of dictionaries, where each dictionary represents a row.
+
+    Args:
+        file: The file-like object of the uploaded JSON.
+
+    Returns:
+        A list of dictionaries containing the JSON data.
+    """
+    # Read the file content
+    content: list[dict[str, str]] = json.load(file)
+    if not isinstance(content, list):
+        format = '[{"topic": "...", "difficulty": "...", "question": "..."}, ...]'
+        raise ValueError(f'Invalid JSON file format, expected a list of dictionaries (e.g. {format})')
+
+    error_rows, questions = [], []
+    for row in content:
+        if not all(key in row for key in ['topic', 'difficulty', 'question']):
+            error_rows.append(row)
+        else:
+            questions.append(QuestionCreate(**row))
+
+    if error_rows:
+        raise ValueError(f'Invalid JSON file format, missing keys: {error_rows}')
 
     return questions
