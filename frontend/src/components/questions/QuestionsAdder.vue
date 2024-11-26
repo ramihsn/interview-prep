@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-import FileUploader from './FileUploader.vue'
-import type { QuestionType } from '../types'
+import FileUploader from '../FileUploader.vue'
+import type { QuestionType } from '../../types'
 
 const emit = defineEmits(['questionAdded', 'fileUploaded', 'fileUploadedError'])
 defineProps({ embedded: { type: Boolean, default: true } })

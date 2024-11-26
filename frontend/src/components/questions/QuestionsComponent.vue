@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { onMounted, ref, defineAsyncComponent } from 'vue'
 
-import ModuleComponent from './ModuleComponent.vue'
+import ModuleComponent from '../ModuleComponent.vue'
 import QuestionsAdder from './QuestionsAdder.vue'
-import type { QuestionType } from '../types'
+// import DropdownMenu from '../DropdownMenu.vue'
+import type { QuestionType } from '../../types'
 
 const baseURL = import.meta.env.VITE_BASE_URL
 const addNewQuestion = ref(false)
@@ -71,6 +72,8 @@ function onFileUploadedError(error: string) {
         />
       </ModuleComponent>
     </Teleport>
+
+    <!-- <DropdownMenu /> -->
 
     <div v-if="loading" class="pt-4 max-w-7xl w-full mx-auto custom-container">
       <Question

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { QuestionType } from '../types'
+import type { QuestionType } from '../../types'
 
 const props = defineProps<{ question: QuestionType }>()
 const emit = defineEmits(['close', 'submit'])

@@ -2,10 +2,10 @@
 import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import ModuleComponent from './ModuleComponent.vue'
+import ModuleComponent from '../ModuleComponent.vue'
 import QuestionEditor from './QuestionEditor.vue'
-import AnswerComponent from './AnswerComponent.vue'
-import type { QuestionType } from '../types'
+import AnswerComponent from '../AnswerComponent.vue'
+import type { QuestionType } from '../../types'
 
 defineEmits(['delete'])
 const props = defineProps<{ question: QuestionType }>()
@@ -64,6 +64,7 @@ function onSubmitChanges(newQuestion: QuestionType) {
     </Teleport>
 
     <div class="absolute bottom-2 right-2 mb-5 mr-3 cursor-pointer">
+      <button class="btn btn-primary pr-5">Submit</button>
       <FontAwesomeIcon
         size="xl"
         icon="pen-to-square"

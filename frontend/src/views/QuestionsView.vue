@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import QuestionsComponent from '@/components/QuestionsComponent.vue'
+import QuestionsComponent from '@/components/questions/QuestionsComponent.vue'
 </script>
 
 <template>
