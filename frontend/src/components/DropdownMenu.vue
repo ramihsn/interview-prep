@@ -1,29 +1,24 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-interface DropdownOption {
-  id: number
-  value: string
-  label: string
-  isSelected?: boolean
-}
+import { GroupsEnum } from '@/enums/GroupsEnum'
+
+const emit = defineEmits(['group-by'])
 
 const isDropdownOpen = ref(false)
-const options: DropdownOption[] = [
-  { id: 1, value: 'none', label: 'None' },
-  { id: 2, value: 'topic', label: 'Topic' },
-  { id: 3, value: 'difficulty', label: 'Difficulty' },
-]
-const currentSelection = ref<DropdownOption>(options[0])
+const currentSelection = ref<GroupsEnum>(GroupsEnum.none)
 
-function selectOption(option: DropdownOption) {
-  currentSelection.value = option
-  isDropdownOpen.value = false
+function selectOption(option: GroupsEnum) {
+  if (option !== currentSelection.value) {
+    currentSelection.value = option
+    isDropdownOpen.value = false
+    emit('group-by', option)
+  }
 }
 </script>
 
 <template>
-  <div class="relative inline-block ml-2 mt-2">
+  <div class="relative inline-block ml-2 mt-2 no-select">
     <!-- Dropdown Trigger -->
     <button
       @click="isDropdownOpen = !isDropdownOpen"
@@ -32,7 +27,7 @@ function selectOption(option: DropdownOption) {
       <!-- <span> Group By: {{ currentSelection.label }} </span> -->
       <span class="flex items-center space-x-2">
         <span>Group By:</span>
-        <span>{{ currentSelection.label }}</span>
+        <span>{{ currentSelection }}</span>
       </span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -56,8 +51,8 @@ function selectOption(option: DropdownOption) {
     >
       <ul class="py-1">
         <li
-          v-for="option in options"
-          :key="option.id"
+          v-for="option in GroupsEnum"
+          :key="option"
           @click="selectOption(option)"
           class="px-4 py-2 cursor-pointer transition-all duration-150 flex items-center justify-between"
           :class="{
@@ -65,7 +60,7 @@ function selectOption(option: DropdownOption) {
             'hover:bg-blue-100 hover:text-blue-600': option !== currentSelection,
           }"
         >
-          {{ option.label }}
+          {{ option }}
           <span v-if="option === currentSelection" class="text-white font-bold"> ✔ </span>
         </li>
       </ul>

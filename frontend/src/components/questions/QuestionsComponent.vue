@@ -1,21 +1,50 @@
 <script lang="ts" setup>
-import { onMounted, ref, defineAsyncComponent } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 
 import ModuleComponent from '../ModuleComponent.vue'
 import QuestionsAdder from './QuestionsAdder.vue'
+import QuestionsGroup from './QuestionsGroup.vue'
 import DropdownMenu from '../DropdownMenu.vue'
+import { GroupsEnum } from '@/enums/GroupsEnum'
 import type { QuestionType } from '../../types'
+
+interface QuestionsGroup {
+  idx: number
+  groupName?: string
+  questions: QuestionType[]
+}
 
 const baseURL = import.meta.env.VITE_BASE_URL
 const addNewQuestion = ref(false)
 const loading = ref<boolean>(true)
 const hasFileUploadError = ref<string | null>(null)
 const questions = ref<QuestionType[]>([])
-
-const Question = defineAsyncComponent(() => import('./QuestionComponent.vue'))
+const groupBy = ref(GroupsEnum.none)
 
 onMounted(async () => {
   await fetchQuestions()
+})
+
+const groupedQuestions = computed<QuestionsGroup[]>(() => {
+  if (groupBy.value === GroupsEnum.none) {
+    return [{ idx: 0, questions: questions.value }]
+  }
+
+  console.log('Group By:', groupBy.value)
+  const grouped = questions.value.reduce((acc: QuestionsGroup[], question: QuestionType) => {
+    const groupName: string = question[groupBy.value.toLowerCase() as keyof QuestionType] as string
+    console.log('groupName:', groupName, typeof groupName)
+    const idx = acc.findIndex((group) => group.groupName === groupName)
+
+    if (idx === -1) {
+      acc.push({ idx: acc.length, groupName, questions: [question] })
+    } else {
+      acc[idx].questions.push(question)
+    }
+
+    return acc
+  }, [] as QuestionsGroup[])
+  return grouped
 })
 
 async function fetchQuestions() {
@@ -34,6 +63,7 @@ function onQuestionAdded(newQuestion: QuestionType) {
   questions.value.push(newQuestion)
   addNewQuestion.value = false
 }
+
 function onQuestionsAdded(newQuestions: QuestionType[]) {
   questions.value = [...questions.value, ...newQuestions]
   addNewQuestion.value = false
@@ -73,19 +103,29 @@ function onFileUploadedError(error: string) {
       </ModuleComponent>
     </Teleport>
 
-    <DropdownMenu />
+    <DropdownMenu @group-by="(newGroupBy) => (groupBy = newGroupBy)" />
 
     <div v-if="loading" class="pt-4 max-w-7xl w-full mx-auto custom-container">
-      <Question
-        v-for="i in 3"
-        :key="i"
-        class="mb-4 animate-pulse loading-question"
-        :question="{ id: i, topic: '...', difficulty: '...', question: 'Loading...' }"
+      <QuestionsGroup
+        :questions="
+          Array.from({ length: 4 }, (_, i) => ({
+            id: i,
+            topic: '...',
+            difficulty: '...',
+            question: 'Loading...',
+          }))
+        "
       />
     </div>
 
     <div v-else-if="questions.length > 0" class="pt-4 max-w-7xl w-full mx-auto custom-container">
-      <Question class="mb-4" v-for="q in questions" :key="q.id" :question="q" @delete="onDelete" />
+      <QuestionsGroup
+        v-for="group in groupedQuestions"
+        :key="group.idx"
+        :questions="group.questions"
+        :groupName="group.groupName"
+        @delete="onDelete"
+      />
     </div>
 
     <div
