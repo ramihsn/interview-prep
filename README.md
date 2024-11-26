@@ -60,13 +60,12 @@ uvicorn main:app [--host <HOST>] [--port <PORT>] [--reload]
 - [x] Add support for json file as an input
 - [x] Add support for excel file as an input
 - [x] Replace SQLAlchemy with SQLModel
-- [ ] Improve the UI/UX of the frontend
-- [ ] Add the answer to the question card 
+- [x] Add the answer to the question card 
+- [x] Implement a grouping functionality for questions
+- [x] Add support for more file types in the file uploader
+- [ ] Implement a search functionality for questions
+- [ ] Group the questions by the topic or difficulty
+- [ ] Enable editing a question
 - [ ] Write unit tests for frontend
 - [ ] Write unit tests for backend
 - [ ] Write e2e tests
-- [ ] Add support for more file types in the file uploader - TBD
-- [ ] Implement a search functionality for questions
-- [ ] Optimize database queries for better performance
-- [ ] Group the questions by the topic or difficulty
-- [ ] Enable editing a question
