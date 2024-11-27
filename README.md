@@ -63,9 +63,10 @@ uvicorn main:app [--host <HOST>] [--port <PORT>] [--reload]
 - [x] Add the answer to the question card 
 - [x] Implement a grouping functionality for questions
 - [x] Add support for more file types in the file uploader
+- [x] Group the questions by the topic or difficulty
+- [x] Enable editing a question
+- [ ] Store user UI preferences
 - [ ] Implement a search functionality for questions
-- [ ] Group the questions by the topic or difficulty
-- [ ] Enable editing a question
 - [ ] Write unit tests for frontend
 - [ ] Write unit tests for backend
 - [ ] Write e2e tests

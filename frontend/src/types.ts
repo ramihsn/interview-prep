@@ -8,11 +8,11 @@ export interface QuestionType {
 }
 
 export interface AnswerType {
-  id: number
+  id?: number | null
   answer: string
   review: string
   rating: number
 
-  question_id: number
-  question: QuestionType
+  question_id?: number
+  question?: QuestionType
 }

@@ -3,9 +3,34 @@ import { ref } from 'vue'
 import type { AnswerType } from '@/types'
 
 const props = defineProps<{ answer: AnswerType | undefined }>()
+const emit = defineEmits(['submitAnswer'])
+
 const answerText = ref<string>(props.answer?.answer || '')
 const reviewText = ref<string>(props.answer?.review || '')
-const rating = ref<number | null>(props.answer?.rating || null)
+const rating = ref<number | null>(props.answer?.rating ?? null)
+const ratingError = ref(false)
+
+function emitAnswer() {
+  if (rating.value === null || rating.value < 0 || rating.value > 10) {
+    ratingError.value = true
+    return
+  }
+  if (answerText.value === '') {
+    // TODO: show error message
+    return
+  }
+  ratingError.value = false
+
+  emit('submitAnswer', {
+    answer: answerText.value,
+    review: reviewText.value,
+    rating: rating.value,
+  } as AnswerType)
+}
+
+defineExpose({
+  emitAnswer,
+})
 </script>
 
 <template>
@@ -13,7 +38,7 @@ const rating = ref<number | null>(props.answer?.rating || null)
     <!-- Textarea for answer input -->
     <textarea
       v-model="answerText"
-      class="textarea textarea-bordered w-full resize-none p-4"
+      class="textarea textarea-bordered w-full p-4"
       placeholder="Write your answer here..."
     ></textarea>
 
@@ -22,18 +47,28 @@ const rating = ref<number | null>(props.answer?.rating || null)
       <!-- Review Section -->
       <div class="space-y-2">
         <div class="font-bold text-lg">Review:</div>
-        <pre class="text-sm text-gray-600 whitespace-pre-wrap">{{ reviewText }}</pre>
+        <textarea
+          v-model="reviewText"
+          class="textarea w-full p-4"
+          placeholder="Write your review here..."
+        ></textarea>
       </div>
 
       <!-- Rating Section -->
       <div class="flex items-center space-x-2">
         <span class="font-bold text-lg">Rating:</span>
-        <span class="badge badge-primary">
-          <span v-if="Number.isInteger(rating)">{{ rating }}</span>
-          <span v-else>{{ rating }}</span>
-          <span>/10</span>
-        </span>
+        <input
+          v-model="rating"
+          type="number"
+          min="0"
+          max="10"
+          class="input input-primary w-16"
+          :class="{ 'input-error': ratingError }"
+          placeholder="10"
+        />
+        <span> / 10</span>
       </div>
     </div>
+    <span v-if="ratingError">The rating value should be between 0 and 10</span>
   </div>
 </template>

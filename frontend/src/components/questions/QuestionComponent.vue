@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import ModuleComponent from '../ModuleComponent.vue'
 import QuestionEditor from './QuestionEditor.vue'
 import AnswerComponent from '../AnswerComponent.vue'
-import type { QuestionType } from '../../types'
+import type { AnswerType, QuestionType } from '../../types'
 
 defineEmits(['delete'])
 const props = defineProps<{ question: QuestionType }>()
@@ -13,6 +13,7 @@ const baseURL = import.meta.env.VITE_BASE_URL
 const markAsDone = ref(false)
 const isLoading = ref(false)
 const editQuestion = ref(false)
+const answerComponentRef = useTemplateRef<typeof AnswerComponent>('answerComponentRef')
 
 function toggleMarkAsDone() {
   isLoading.value = true // Set loading to true before API call
@@ -45,6 +46,38 @@ function onSubmitChanges(newQuestion: QuestionType) {
   // update the backend with the new question
   // update the question values in the list of questions
 }
+
+function onAnswerSubmit(answer: AnswerType) {
+  console.log(answer)
+  console.log(props.question.answer)
+  if (answer !== props.question.answer) {
+    const headers = { 'Content-Type': 'application/json' }
+    const requestParams = {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ ...answer, question_id: props.question.id }),
+    }
+    fetch(`${baseURL}/api/v1/answers`, requestParams)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok')
+        }
+        return res.json()
+      })
+      .then((data) => {
+        console.log('Success:', data)
+      })
+      .catch((err) => {
+        console.error('Error:', err)
+      })
+  }
+}
+
+function handleSubmit() {
+  if (answerComponentRef.value) {
+    answerComponentRef.value.emitAnswer()
+  }
+}
 </script>
 
 <template>
@@ -64,7 +97,7 @@ function onSubmitChanges(newQuestion: QuestionType) {
     </Teleport>
 
     <div class="absolute bottom-2 right-2 mb-5 mr-3 cursor-pointer">
-      <button class="btn btn-primary pr-5">Submit</button>
+      <button class="btn btn-primary pr-5" @click="handleSubmit">Submit</button>
       <FontAwesomeIcon
         size="xl"
         icon="pen-to-square"
@@ -98,7 +131,12 @@ function onSubmitChanges(newQuestion: QuestionType) {
         </p>
         <hr class="pb-3" />
         <h2>Answer:</h2>
-        <AnswerComponent :answer="question.answer" />
+        <AnswerComponent
+          ref="answerComponentRef"
+          :answer="question.answer"
+          :question_id="question.id"
+          @submitAnswer="onAnswerSubmit"
+        />
       </div>
     </div>
 
