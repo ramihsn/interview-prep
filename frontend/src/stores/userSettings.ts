@@ -37,7 +37,7 @@ async function updateUserTheme(theme: string) {
 }
 
 async function updateUserGroupBy(groupBy: GroupsEnum) {
-  const url = `${baseURL}/api/v1/user/settings/questions_group_by?questions_group_by=${groupBy}`
+  const url = `${baseURL}/api/v1/user/settings/group_by?group_by=${groupBy}`
   const requestParams = {
     method: 'PUT',
     headers: {
@@ -63,22 +63,19 @@ export const useUserSettingsStore = defineStore('counter', {
   }),
   actions: {
     setTheme(theme: string) {
-      updateUserTheme(theme).then((data) => {
-        console.log('data:', data, '==>', typeof data)
-        console.log('theme:', theme, '==>', typeof theme)
+      updateUserTheme(theme).then(() => {
         this.theme = theme
       })
     },
     setGroupBy(groupBy: GroupsEnum) {
-      updateUserGroupBy(groupBy).then((data) => {
-        console.log(data, '==>', typeof data)
+      updateUserGroupBy(groupBy).then(() => {
         this.groupBy = groupBy
       })
     },
     async fetchUserSettings() {
       getUserSettings().then((data) => {
-        console.log(data)
         this.theme = getTheme(data.theme)
+        this.groupBy = data.questions_group_by as GroupsEnum
       })
     },
     toggleTheme() {

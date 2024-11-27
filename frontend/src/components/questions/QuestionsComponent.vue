@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue'
 
+import { useUserSettingsStore } from '@/stores/userSettings'
 import ModuleComponent from '../ModuleComponent.vue'
 import QuestionsAdder from './QuestionsAdder.vue'
 import QuestionsGroup from './QuestionsGroup.vue'
@@ -14,26 +15,26 @@ interface QuestionsGroup {
   questions: QuestionType[]
 }
 
+const userSettingsStore = useUserSettingsStore()
 const baseURL = import.meta.env.VITE_BASE_URL
 const addNewQuestion = ref(false)
 const loading = ref<boolean>(true)
 const hasFileUploadError = ref<string | null>(null)
 const questions = ref<QuestionType[]>([])
-const groupBy = ref(GroupsEnum.none)
 
 onMounted(async () => {
   await fetchQuestions()
 })
 
 const groupedQuestions = computed<QuestionsGroup[]>(() => {
-  if (groupBy.value === GroupsEnum.none) {
+  if (userSettingsStore.groupBy === GroupsEnum.none) {
     return [{ idx: 0, questions: questions.value }]
   }
 
-  console.log('Group By:', groupBy.value)
   const grouped = questions.value.reduce((acc: QuestionsGroup[], question: QuestionType) => {
-    const groupName: string = question[groupBy.value.toLowerCase() as keyof QuestionType] as string
-    console.log('groupName:', groupName, typeof groupName)
+    const groupName: string = question[
+      userSettingsStore.groupBy.toLowerCase() as keyof QuestionType
+    ] as string
     const idx = acc.findIndex((group) => group.groupName === groupName)
 
     if (idx === -1) {
@@ -59,7 +60,6 @@ async function fetchQuestions() {
 }
 
 function onQuestionAdded(newQuestion: QuestionType) {
-  console.log(newQuestion)
   questions.value.push(newQuestion)
   addNewQuestion.value = false
 }
@@ -70,7 +70,6 @@ function onQuestionsAdded(newQuestions: QuestionType[]) {
 }
 
 async function onDelete(questionId: number) {
-  console.log('Remove Question with ID:', questionId)
   const res = await fetch(`${baseURL}/api/v1/questions/${questionId}`, {
     method: 'DELETE',
     headers: {
@@ -103,8 +102,9 @@ function onFileUploadedError(error: string) {
       </ModuleComponent>
     </Teleport>
 
-    <DropdownMenu @group-by="(newGroupBy) => (groupBy = newGroupBy)" />
+    <DropdownMenu />
 
+    <!-- Loading the questions from the backend, show demy questions -->
     <div v-if="loading" class="pt-4 max-w-7xl w-full mx-auto custom-container">
       <QuestionsGroup
         :questions="
@@ -118,6 +118,7 @@ function onFileUploadedError(error: string) {
       />
     </div>
 
+    <!-- The Questions -->
     <div v-else-if="questions.length > 0" class="pt-4 max-w-7xl w-full mx-auto custom-container">
       <QuestionsGroup
         v-for="group in groupedQuestions"
@@ -128,6 +129,7 @@ function onFileUploadedError(error: string) {
       />
     </div>
 
+    <!-- There is no questions to show -->
     <div
       v-else
       class="wrapper bg-primary text-primary-content flex flex-col items-center justify-center p-6 custom-container"

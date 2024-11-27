@@ -10,7 +10,7 @@ const showGroup = ref(true)
 </script>
 
 <template>
-  <div class="card w-max">
+  <div class="card">
     <div
       v-if="groupName !== undefined"
       class="card-title no-select"

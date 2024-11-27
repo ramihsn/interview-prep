@@ -48,8 +48,6 @@ function onSubmitChanges(newQuestion: QuestionType) {
 }
 
 function onAnswerSubmit(answer: AnswerType) {
-  console.log(answer)
-  console.log(props.question.answer)
   if (answer !== props.question.answer) {
     const headers = { 'Content-Type': 'application/json' }
     const requestParams = {

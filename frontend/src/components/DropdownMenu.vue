@@ -2,17 +2,15 @@
 import { ref } from 'vue'
 
 import { GroupsEnum } from '@/enums/GroupsEnum'
+import { useUserSettingsStore } from '@/stores/userSettings'
 
-const emit = defineEmits(['group-by'])
-
+const userSettingsStore = useUserSettingsStore()
 const isDropdownOpen = ref(false)
-const currentSelection = ref<GroupsEnum>(GroupsEnum.none)
 
 function selectOption(option: GroupsEnum) {
-  if (option !== currentSelection.value) {
-    currentSelection.value = option
+  if (option !== userSettingsStore.groupBy) {
+    userSettingsStore.setGroupBy(option)
     isDropdownOpen.value = false
-    emit('group-by', option)
   }
 }
 </script>
@@ -27,7 +25,7 @@ function selectOption(option: GroupsEnum) {
       <!-- <span> Group By: {{ currentSelection.label }} </span> -->
       <span class="flex items-center space-x-2">
         <span>Group By:</span>
-        <span>{{ currentSelection }}</span>
+        <span>{{ userSettingsStore.groupBy }}</span>
       </span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -56,12 +54,12 @@ function selectOption(option: GroupsEnum) {
           @click="selectOption(option)"
           class="px-4 py-2 cursor-pointer transition-all duration-150 flex items-center justify-between"
           :class="{
-            'bg-blue-500 text-white': option === currentSelection,
-            'hover:bg-blue-100 hover:text-blue-600': option !== currentSelection,
+            'bg-blue-500 text-white': option === userSettingsStore.groupBy,
+            'hover:bg-blue-100 hover:text-blue-600': option !== userSettingsStore.groupBy,
           }"
         >
           {{ option }}
-          <span v-if="option === currentSelection" class="text-white font-bold"> ✔ </span>
+          <span v-if="option === userSettingsStore.groupBy" class="text-white font-bold"> ✔ </span>
         </li>
       </ul>
     </div>

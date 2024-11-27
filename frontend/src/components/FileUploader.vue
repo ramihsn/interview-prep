@@ -51,7 +51,6 @@ function onFileChanged($event: Event) {
           return res.json()
         })
         .then((data) => {
-          console.log(data)
           emit('fileUploaded', data)
         })
         .catch((err) => {
