@@ -80,7 +80,7 @@ function handleSubmit() {
 
 <template>
   <div
-    class="card bg-primary text-primary-content shadow custom relative mb-10 pb-2"
+    class="card bg-primary text-primary-content shadow custom relative mb-10 pb-2 no-select"
     :class="{ done: markAsDone }"
     :id="`question-${question.id}`"
   >

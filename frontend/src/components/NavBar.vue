@@ -16,7 +16,7 @@ const isDark = computed(() => userSettingsStore.isDarkTheme)
     <div class="navbar-start ml-4">
       <div class="flex items-center space-x-3">
         <img src="/icon.svg" alt="Nvidia Logo" class="w-10 h-10" />
-        <span class="text-2xl font-semibold dark:text-white">Interview Prep</span>
+        <span class="text-2xl font-semibold dark:text-white no-select">Interview Prep</span>
       </div>
     </div>
 
