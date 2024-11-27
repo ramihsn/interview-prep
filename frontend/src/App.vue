@@ -1,17 +1,20 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onBeforeMount } from 'vue'
 import { RouterView } from 'vue-router'
 
 import NavBar from './components/NavBar.vue'
-import { Theme } from './themes'
+import { useUserSettingsStore } from './stores/userSettings'
 
-const theme = ref(Theme.DARK)
-const onThemeSet = (newTheme: Theme) => (theme.value = newTheme)
+const userSettingsStore = useUserSettingsStore()
+
+onBeforeMount(() => {
+  userSettingsStore.fetchUserSettings()
+})
 </script>
 
 <template>
-  <main :data-theme="theme">
-    <NavBar @setTheme="onThemeSet" :theme="theme" />
+  <main :data-theme="userSettingsStore.theme">
+    <NavBar />
     <RouterView />
   </main>
 </template>

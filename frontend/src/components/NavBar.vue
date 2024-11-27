@@ -2,14 +2,13 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { isDarkTheme, toggleTheme } from '@/themes'
+import { useUserSettingsStore } from '@/stores/userSettings'
 
-defineEmits(['setTheme'])
 const router = useRoute()
-const props = defineProps(['theme'])
-const isDark = computed(() => isDarkTheme(props.theme))
 const pageName = computed(() => router.name)
-console.log(pageName.value)
+
+const userSettingsStore = useUserSettingsStore()
+const isDark = computed(() => userSettingsStore.isDarkTheme)
 </script>
 
 <template>
@@ -42,7 +41,7 @@ console.log(pageName.value)
           >Job</a
         >
 
-        <div class="btn btn-ghost" @click="$emit('setTheme', toggleTheme(props.theme))">
+        <div class="btn btn-ghost" @click="() => userSettingsStore.toggleTheme()">
           <img v-if="isDark" src="/dark-theme-svgrepo-com.svg" alt="Nvidia Logo" class="w-6 h-6" />
           <img v-else src="/light-mode-svgrepo-com.svg" alt="Nvidia Logo" class="w-6 h-6" />
         </div>

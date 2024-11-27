@@ -3,6 +3,7 @@ import '@/assets/main.css'
 import '../vite-env.d.ts'
 
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
@@ -20,4 +21,5 @@ import {
 // /* add icons to the library */
 library.add([faFileCsv, faFileCode, faFileExcel, faTrashCan, faPenToSquare])
 
-createApp(App).component('font-awesome-icon', FontAwesomeIcon).use(router).mount('#app')
+const pinia = createPinia()
+createApp(App).use(pinia).component('font-awesome-icon', FontAwesomeIcon).use(router).mount('#app')

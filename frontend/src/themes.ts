@@ -6,12 +6,20 @@ export enum Theme {
   DARK = _DARK,
 }
 
-export function isDarkTheme(theme: Theme): boolean {
+export function isDarkTheme(theme: string): boolean {
   return theme === Theme.DARK
 }
 
-export function toggleTheme(theme: Theme): string {
+export function toggleTheme(theme: string): string {
   return theme === Theme.DARK ? _LIGHT : _DARK
+}
+
+export function getTheme(theme?: string): Theme {
+  if (!theme) {
+    return Theme.DARK
+  }
+
+  return theme === _LIGHT ? Theme.LIGHT : Theme.DARK
 }
 
 export const themes = [
