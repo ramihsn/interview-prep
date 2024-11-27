@@ -1,0 +1,10 @@
+backend/run.bat
+backend/kill.bat
+frontend/public/favicon.ico-bkp
+frontend/src/assets/base.css
+**/*.json
+**/*.csv
+**/*.txt
+**/.venv
+/scripts
+/loki-data

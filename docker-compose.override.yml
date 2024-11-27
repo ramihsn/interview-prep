@@ -1,0 +1,20 @@
+services:
+  backend:
+    volumes:
+      - ./backend:/app  # Mount local backend code
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev  # Explicitly use the dev stage
+    ports:
+      - "5173:5173"  # Vite's default dev server port
+    volumes:
+      - ./frontend:/app  # Mount local frontend code
+      - /app/node_modules/ # Exclude node_modules from being mounted
+    command: vite --host 0.0.0.0  # Run development server
+
+  # loki:
+  #   command: -config.file=/etc/loki/config.yaml

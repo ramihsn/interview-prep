@@ -5,10 +5,17 @@
 		},
 		{
 			"path": "frontend"
+		},
+		{
+			"path": "scripts"
+		},
+		{
+			"path": "config"
 		}
 	],
 	"settings": {
 		"cSpell.words": [
+			"pinia",
 			"VITE"
 		]
 	}
