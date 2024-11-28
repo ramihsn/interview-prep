@@ -17,6 +17,9 @@ services:
         max-file: "3"
     depends_on:
       - loki
+    networks:
+      - app-network
+      - loki  # Optional: For sending logs to Loki
 
   # Frontend Service
   frontend:
@@ -27,11 +30,16 @@ services:
       - "80:80"
     volumes:
       - ./frontend:/app
+    environment:
+      - VITE_BASE_URL=http://localhost:8000
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - app-network
+      - loki  # Optional: For sending logs to Loki
 
   # Loki (Logging Aggregation)
   loki:
@@ -84,3 +92,4 @@ services:
 
 networks:
   loki:
+  app-network:
