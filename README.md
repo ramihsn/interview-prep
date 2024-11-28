@@ -4,7 +4,7 @@
 
 This project is designed to help users prepare for interviews by providing a platform to manage questions and answers.<br>
 It consists of a frontend built with Vue.js and a backend built with FastAPI.<br>
-The project now includes Docker-based containerization and centralized logging with Loki and Promtail.<br><br>
+The project now includes Docker-based containerization and centralized logging with Loki.<br><br>
 I do recommend to use tools like chatGPT for evaluation the answers<br>
 by using a prompt like:
 > I have an interview at \<COMPANY NAME>, I will post a question with an answer,
@@ -18,7 +18,7 @@ be creative :wink:
 - Frontend built with Vue 3 and styled with Tailwind CSS and daisyUI.
 - Backend developed with FastAPI, utilizing SQLAlchemy and SQLite for data persistence.
 - Dockerized services for simplified setup and deployment.
-- Centralized logging with Loki and Promtail for streamlined debugging and monitoring.
+- Centralized logging with Loki for streamlined debugging and monitoring.
 
 ---
 
@@ -40,7 +40,6 @@ docker-compose up --build
 - Backend: http://localhost:8000
 - Grafana: http://localhost:3000 (admin/admin for login)
 - Loki: Centralized logging service.
-- Promtail: Log collector, configured to send logs to Loki.
 
 ---
 
@@ -89,6 +88,7 @@ The backend is developed using FastAPI. It provides a RESTful API for managing q
 - [SQLModel](https://sqlmodel.tiangolo.com/)
 - [SQLite](https://www.sqlite.org/)
 - [OpenPyXL](https://openpyxl.readthedocs.io/en/stable/)
+- [python-logging-loki](https://pypi.org/project/python-logging-loki/)
 
 ### Project Setup
 Run the Application
@@ -99,19 +99,20 @@ uvicorn main:app [--host <HOST>] [--port <PORT>] [--reload]
 ```
 
 ### TODOs
-- [x] Add support for csv file as an input
-- [x] Add support for json file as an input
-- [x] Add support for excel file as an input
-- [x] Replace SQLAlchemy with SQLModel
-- [x] Add the answer to the question card 
-- [x] Implement a grouping functionality for questions
-- [x] Add support for more file types in the file uploader
-- [x] Group the questions by the topic or difficulty
-- [x] Enable editing a question
-- [x] wrap the project with docker and docker-compose
-- [x] add logging services
-- [ ] Store user UI preferences
-- [ ] Implement a search functionality for questions
-- [ ] Write unit tests for frontend
-- [ ] Write unit tests for backend
-- [ ] Write e2e tests
+- ✅ Add support for csv file as an input
+- ✅ Add support for json file as an input
+- ✅ Add support for excel file as an input
+- ✅ Replace SQLAlchemy with SQLModel
+- ✅ Add the answer to the question card 
+- ✅ Implement a grouping functionality for questions
+- ✅ Add support for more file types in the file uploader
+- ✅ Group the questions by the topic or difficulty
+- ✅ Enable editing a question
+- ✅ wrap the project with docker and docker-compose
+- ✅ add logging services
+- ✅ Store user UI preferences
+- 🟧 send logs from both front and backend to loki
+- ⬜ Implement a search functionality for questions
+- ⬜ Write unit tests for frontend
+- ⬜ Write unit tests for backend
+- ⬜ Write e2e tests
