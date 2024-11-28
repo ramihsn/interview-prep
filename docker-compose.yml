@@ -8,8 +8,6 @@ services:
       - "8000:8000"
     environment:
       - LOG_LEVEL=info
-    volumes:
-      - ./backend:/app
     logging:
       driver: "json-file"
       options:
@@ -19,7 +17,7 @@ services:
       - loki
     networks:
       - app-network
-      - loki  # Optional: For sending logs to Loki
+      - loki
 
   # Frontend Service
   frontend:
@@ -39,7 +37,7 @@ services:
         max-file: "3"
     networks:
       - app-network
-      - loki  # Optional: For sending logs to Loki
+      - loki
 
   # Loki (Logging Aggregation)
   loki:
@@ -54,10 +52,13 @@ services:
   promtail:
     image: grafana/promtail:2.9.2
     volumes:
-      - /var/log:/var/log
+      - ./backend/app.log:/var/log/app.log
+      - ./config/promtail-config.yaml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
     networks:
       - loki
+    depends_on:
+      - backend
 
   # Grafana (Visualization)
   grafana:
