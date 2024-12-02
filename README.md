@@ -112,7 +112,6 @@ npm run lint
 
 The backend is developed using FastAPI. It provides a RESTful API for managing questions and answers, and handles file uploads for bulk question imports.
 
-
 ### Main Technologies
 - [FastAPI](https://fastapi.tiangolo.com/tutorial/first-steps/)
 - [SQLModel](https://sqlmodel.tiangolo.com/)
