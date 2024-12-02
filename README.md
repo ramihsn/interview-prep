@@ -112,6 +112,9 @@ uvicorn main:app [--host <HOST>] [--port <PORT>] [--reload]
 - ✅ add logging services
 - ✅ Store user UI preferences
 - 🟧 send logs from both front and backend to loki
+- ⬜ Move form SQLite to PostgreSQL
+- ⬜ Create job endpoint to link between a job and questions
+- ⬜ Add user login and subscription
 - ⬜ Implement a search functionality for questions
 - ⬜ Write unit tests for frontend
 - ⬜ Write unit tests for backend
