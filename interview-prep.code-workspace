@@ -17,6 +17,9 @@
 		"cSpell.words": [
 			"pinia",
 			"VITE"
-		]
-	}
+		],
+		"files.associations": {
+			".env-example": "properties"
+		}
+	},
 }

@@ -7,8 +7,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - LOG_LEVEL=info
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/interview
+      - LOG_LEVEL=${LOG_LEVEL}
+      - DATABASE_URL=${DOCKER_DATABASE_URL}
     logging:
       driver: "json-file"
       options:
@@ -18,8 +18,9 @@ services:
       - loki
       - postgres
     networks:
+      - app-backend-network
       - app-network
-      - loki
+      - loki-network
 
   # Frontend Service
   frontend:
@@ -39,7 +40,7 @@ services:
         max-file: "3"
     networks:
       - app-network
-      - loki
+      - loki-network
 
   # Loki (Logging Aggregation)
   loki:
@@ -48,7 +49,7 @@ services:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
     networks:
-      - loki
+      - loki-network
 
   # Promtail (Log Collector)
   # promtail:
@@ -91,29 +92,28 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - loki
+      - loki-network
 
   # PostgreSQL Service
   postgres:
     image: postgres:15
-    ports:
-      - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=interview
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - app-network
+      - app-backend-network
 
 networks:
-  loki:
+  app-backend-network:
+  loki-network:
   app-network:
 
 volumes:

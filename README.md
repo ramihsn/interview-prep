@@ -133,8 +133,8 @@ uvicorn main:app [--host <HOST>] [--port <PORT>] [--reload]
 - ✅ add logging services
 - ✅ Store user UI preferences
 - ✅ Move form SQLite to PostgreSQL
+- ✅ add alembic for database migrations
 - 🟧 send logs to loki
-- ⬜ add alembic for database migrations
 - ⬜ Create job endpoint to link between a job and questions
 - ⬜ Add user login and subscription
 - ⬜ Write unit tests

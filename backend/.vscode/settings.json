@@ -5,5 +5,5 @@
         "**/venv": true,
         "**/.venv": true,
         "**/__pycache__": true,
-    }
+    },
 }
