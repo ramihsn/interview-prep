@@ -1,4 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi import docs as fastapi_docs
+from starlette.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from multiprocessing import Queue
 from fastapi import FastAPI
 import logging_loki
@@ -27,7 +30,8 @@ logging.basicConfig(
     ],
 )
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, docs_url=None)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -37,3 +41,19 @@ app.add_middleware(
 )
 
 app.include_router(api.router)
+
+
+# Route to serve the favicon
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("static/favicon.ico")
+
+
+# override the default swagger UI to include the favicon
+@app.get("/docs", include_in_schema=False)
+async def swagger_ui_html():
+    return fastapi_docs.get_swagger_ui_html(
+        openapi_url="/openapi.json",
+        title="[BE] Interview Prep API",
+        swagger_favicon_url="/favicon.ico",
+    )
