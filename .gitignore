@@ -8,3 +8,4 @@ frontend/src/assets/base.css
 **/.venv
 /scripts
 /loki-data
+/postgres_data

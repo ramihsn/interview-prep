@@ -1,5 +1,22 @@
 # interview-prep
 
+## Table of Contents
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Prerequisites](#prerequisites)
+4. [Quick Start with Docker](#quick-start-with-docker)
+5. [Frontend](#frontend)
+   - [Technologies](#main-technologies)
+   - [Local Development Setup](#local-development-setup)
+6. [Backend](#backend)
+   - [Technologies](#main-technologies-1)
+   - [Setup](#project-setup)
+7. [TODOs](#todos)
+   - [Backend](#backend-1)
+   - [Frontend](#frontend-1)
+   - [General](#general)
+   - [TBD](#tbd)
+
 ## Overview
 
 This project is designed to help users prepare for interviews by providing a platform to manage questions and answers.<br>
@@ -23,25 +40,38 @@ be creative :wink:
 ---
 
 ## Prerequisites
-- Docker
-- Node.js (for local frontend development)
-- Python 3.12+ (for local backend development)
+Before you begin, ensure you have the following installed on your system:
+- [Docker](https://docs.docker.com/get-docker/) (for running the project in containers)
+- [Node.js 18+](https://nodejs.org/) (for local frontend development)
+- [Python 3.12+](https://www.python.org/) (for local backend development)
 
 ---
 
-## Quick Start with Docker
-### Run All Services with Docker Compose
-docker-compose up --build
+## 
+1. Clone the repository:
+  ```bash
+  git clone <repository-url>
+  cd interview-prep
+  ```
 
-### Services Overview
-- Frontend:
-  - Development: http://localhost:5173
-  - Production: http://localhost
-- Backend: http://localhost:8000
-- Grafana: http://localhost:3000 (admin/admin for login)
-- Loki: Centralized logging service.
+2. Start all services
+  ```bash
+  docker-compose up --build -d
+  ```
+
+3. Access the services
+  * Frontend (development): http://localhost:5173
+  * Frontend (production): http://localhost
+  * Backend: http://localhost:8000/docs (Swagger UI)
+  * Grafana: http://localhost:3000 (default login: admin/admin)
+  * Loki: Centralized logging service.
 
 ---
+
+## To stop all services
+```bash
+docker-compose down
+```
 
 ## Frontend
 
@@ -86,7 +116,7 @@ The backend is developed using FastAPI. It provides a RESTful API for managing q
 ### Main Technologies
 - [FastAPI](https://fastapi.tiangolo.com/tutorial/first-steps/)
 - [SQLModel](https://sqlmodel.tiangolo.com/)
-- [SQLite](https://www.sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/)
 - [OpenPyXL](https://openpyxl.readthedocs.io/en/stable/)
 - [python-logging-loki](https://pypi.org/project/python-logging-loki/)
 
@@ -98,24 +128,34 @@ pip install -r requirements.txt
 uvicorn main:app [--host <HOST>] [--port <PORT>] [--reload]
 ```
 
-### TODOs
+### TODOs:
+#### Backend
+- ✅ Replace SQLAlchemy with SQLModel
+- ✅ add logging services
+- ✅ Store user UI preferences
+- ✅ Move form SQLite to PostgreSQL
+- 🟧 send logs to loki
+- ⬜ add alembic for database migrations
+- ⬜ Create job endpoint to link between a job and questions
+- ⬜ Add user login and subscription
+- ⬜ Write unit tests
+
+#### Frontend
 - ✅ Add support for csv file as an input
 - ✅ Add support for json file as an input
 - ✅ Add support for excel file as an input
-- ✅ Replace SQLAlchemy with SQLModel
 - ✅ Add the answer to the question card 
 - ✅ Implement a grouping functionality for questions
-- ✅ Add support for more file types in the file uploader
 - ✅ Group the questions by the topic or difficulty
 - ✅ Enable editing a question
-- ✅ wrap the project with docker and docker-compose
-- ✅ add logging services
-- ✅ Store user UI preferences
-- 🟧 send logs from both front and backend to loki
-- ⬜ Move form SQLite to PostgreSQL
-- ⬜ Create job endpoint to link between a job and questions
-- ⬜ Add user login and subscription
+- ⬜ send logs to loki
 - ⬜ Implement a search functionality for questions
-- ⬜ Write unit tests for frontend
-- ⬜ Write unit tests for backend
+- ⬜ Write unit tests
+
+#### General
+- ✅ add logging services
+- ✅ wrap the project with docker and docker-compose
 - ⬜ Write e2e tests
+
+#### TBD
+- ⬜ create CI/CD

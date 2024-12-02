@@ -8,6 +8,7 @@ services:
       - "8000:8000"
     environment:
       - LOG_LEVEL=info
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/interview
     logging:
       driver: "json-file"
       options:
@@ -15,6 +16,7 @@ services:
         max-file: "3"
     depends_on:
       - loki
+      - postgres
     networks:
       - app-network
       - loki
@@ -91,6 +93,28 @@ services:
     networks:
       - loki
 
+  # PostgreSQL Service
+  postgres:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=interview
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
 networks:
   loki:
   app-network:
+
+volumes:
+  postgres_data:
