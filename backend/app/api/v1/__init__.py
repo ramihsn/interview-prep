@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from . import questions, answers, user
+from . import questions, answers, users
 
 router = APIRouter(prefix='/v1')
 router.include_router(questions.router, tags=["questions"])
 router.include_router(answers.router, tags=["answers"])
-router.include_router(user.router, tags=["user"])
+router.include_router(users.router, tags=["users"])

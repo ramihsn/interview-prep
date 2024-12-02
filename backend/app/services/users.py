@@ -1,6 +1,6 @@
 from sqlmodel import Session
 
-from ..models.user import UserSettings
+from ..models.users import UserSettings
 
 
 async def _get_or_create_user(db: Session) -> UserSettings:
