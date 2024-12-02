@@ -3,10 +3,12 @@ from multiprocessing import Queue
 from fastapi import FastAPI
 import logging_loki
 import logging
+import dotenv
 
 from app import api
 from app.core import lifespan
 
+dotenv.load_dotenv()
 handler = logging_loki.LokiQueueHandler(
     Queue(-1),
     url="http://loki:3100/loki/api/v1/push",
