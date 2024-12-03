@@ -1,6 +1,7 @@
 import sqlmodel
 
 from .answers import AnswerRead
+from . import helpers
 
 
 class QuestionBase(sqlmodel.SQLModel):
@@ -20,5 +21,4 @@ class QuestionCreate(QuestionBase):
     pass
 
 
-class QuestionUpdate(QuestionBase):
-    pass
+QuestionUpdate = helpers.make_optional(QuestionBase)

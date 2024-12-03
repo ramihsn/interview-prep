@@ -1,24 +1,17 @@
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from ..schemas.answers import AnswerCreate, AnswerRead
 from ..models.questions import Question as QuestionModel
 from ..models.answers import Answer as AnswerModel
+from . import helpers
 
 
 async def get_answers(db: Session, skip: int = 0, limit: int = 100) -> list[AnswerRead]:
-    q = select(AnswerRead)
-
-    if skip and skip > 0:
-        q = q.offset(skip)
-
-    if limit and limit > 0:
-        q = q.limit(limit)
-
-    return [AnswerRead.model_validate(i) for i in db.exec(q).all()]
+    return await helpers.get_items(db, AnswerModel, AnswerRead, skip, limit)
 
 
 async def get_answer(db: Session, answer_id: int) -> AnswerRead | None:
-    return AnswerRead.model_validate(db.get(AnswerRead, answer_id))
+    return await helpers.get_item(db, AnswerModel, AnswerRead, answer_id)
 
 
 async def answer_question(db: Session, answer: AnswerCreate) -> AnswerRead:
@@ -40,13 +33,4 @@ async def answer_question(db: Session, answer: AnswerCreate) -> AnswerRead:
 
 
 async def delete_answer(db: Session, answer_id: int) -> None:
-    if not (answer := db.get(AnswerRead, answer_id)):
-        raise ValueError("Answer does not exist")
-
-    question = db.get(QuestionModel, answer.question_id)
-
-    question.answer = None
-    db.delete(answer)
-    db.commit()
-    db.refresh(question)
-    db.refresh(answer)
+    return await helpers.delete_item(db, AnswerModel, AnswerRead, answer_id)

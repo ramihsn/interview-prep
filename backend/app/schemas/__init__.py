@@ -1,3 +1,3 @@
-from . import questions, answers
+from . import questions, answers, positions
 
-__all__ = ["questions", "answers"]
+__all__ = ["questions", "answers", "positions"]

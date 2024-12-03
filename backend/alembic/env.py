@@ -38,7 +38,7 @@ target_metadata = sqlmodel.SQLModel.metadata
 # Override sqlalchemy.url dynamically from environment variables
 
 ini_database_url = config.get_section(config.config_ini_section, {}).get("sqlalchemy.url")
-database_url = os.getenv("DATABASE_URL", ini_database_url)
+database_url = os.getenv("LOCAL_DATABASE_URL", ini_database_url)
 config.set_main_option("sqlalchemy.url", database_url)
 
 

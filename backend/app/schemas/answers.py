@@ -1,6 +1,7 @@
 import sqlmodel
 
 from ..models.answers import Answer as AnswerRead  # noqa: F401
+from . import helpers
 
 
 class AnswerBase(sqlmodel.SQLModel):
@@ -14,5 +15,4 @@ class AnswerCreate(AnswerBase):
     pass
 
 
-class AnswerUpdate(AnswerBase):
-    pass
+AnswerUpdate = helpers.make_optional(AnswerBase)
