@@ -41,9 +41,7 @@ async def update_item(db: Session, model: Type[SQLModel], read_schema: Type[SQLM
 
 
 async def delete_item(db: Session, model: Type[SQLModel], read_schema: Type[SQLModel], item_id: int) -> SQLModel | None:
-    if not (item := db.get(model, item_id)):
-        raise ValueError(f"{model.__name__} does not exist")
-
-    db.delete(item)
-    db.commit()
-    return read_schema.model_validate(item)
+    if item := db.get(model, item_id):
+        db.delete(item)
+        db.commit()
+        return read_schema.model_validate(item)

@@ -61,6 +61,7 @@ def factory(name: str, logger: Logger, service: Service, schema_module: SchemaMo
         id: int = Path(..., description=f"The ID of the {name}"),
         db=Depends(get_db),
     ):
+        logger.info(f"Fetching {name} with id {id}")
         try:
             item = await service.get_item(db, id)
             if item is None:
