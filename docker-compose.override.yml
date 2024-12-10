@@ -13,8 +13,10 @@ services:
       - "5173:5173"  # Vite's default dev server port
     volumes:
       - ./frontend:/app  # Mount local frontend code
-      - /app/node_modules/ # Exclude node_modules from being mounted
+      - /app/node_modules # Exclude node_modules from being mounted
     command: vite --host 0.0.0.0  # Run development server
+    environment:
+      - CHOKIDAR_USEPOLLING=1
 
   # loki:
   #   command: -config.file=/etc/loki/config.yaml
