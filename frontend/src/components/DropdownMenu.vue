@@ -16,7 +16,7 @@ function selectOption(option: GroupsEnum) {
 </script>
 
 <template>
-  <div class="relative inline-block ml-2 mt-2 no-select">
+  <div class="relative inline-block ml-4 mt-3 no-select">
     <!-- Dropdown Trigger -->
     <button
       @click="isDropdownOpen = !isDropdownOpen"
@@ -25,7 +25,7 @@ function selectOption(option: GroupsEnum) {
       <!-- <span> Group By: {{ currentSelection.label }} </span> -->
       <span class="flex items-center space-x-2">
         <span>Group By:</span>
-        <span>{{ userSettingsStore.groupBy }}</span>
+        <span>{{ userSettingsStore.groupBy ?? 'None' }}</span>
       </span>
       <svg
         xmlns="http://www.w3.org/2000/svg"

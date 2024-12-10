@@ -27,7 +27,7 @@ onMounted(async () => {
 })
 
 const groupedQuestions = computed<QuestionsGroup[]>(() => {
-  if (userSettingsStore.groupBy === GroupsEnum.none) {
+  if (userSettingsStore.groupBy === null || userSettingsStore.groupBy === GroupsEnum.none) {
     return [{ idx: 0, questions: questions.value }]
   }
 
@@ -91,7 +91,7 @@ function onFileUploadedError(error: string) {
 </script>
 
 <template>
-  <div class="koko">
+  <div class="custom-container relative">
     <Teleport to=".question-module" v-if="addNewQuestion">
       <ModuleComponent @close="addNewQuestion = false">
         <QuestionsAdder
@@ -102,7 +102,7 @@ function onFileUploadedError(error: string) {
       </ModuleComponent>
     </Teleport>
 
-    <DropdownMenu />
+    <DropdownMenu class="dropdown-top-left" />
 
     <!-- Loading the questions from the backend, show demy questions -->
     <div v-if="loading" class="pt-4 max-w-7xl w-full mx-auto custom-container">
@@ -201,9 +201,16 @@ function onFileUploadedError(error: string) {
   overflow-y: auto;
 
   scrollbar-width: none;
+  position: relative; /* Ensure the parent is positioned relatively */
 }
 
 .loading-question {
   width: 100%;
+}
+
+.dropdown-top-left {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>

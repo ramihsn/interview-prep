@@ -6,7 +6,7 @@ import { Theme, getTheme, isDarkTheme, toggleTheme } from '@/themes'
 const baseURL = import.meta.env.VITE_BASE_URL
 
 async function getUserSettings() {
-  const response = await fetch(`${baseURL}/api/v1/user/settings`)
+  const response = await fetch(`${baseURL}/api/v1/users/settings`)
   if (!response.ok) {
     console.error(await response.json())
     throw new Error('An error occurred while fetching the user settings')
@@ -17,7 +17,7 @@ async function getUserSettings() {
 }
 
 async function updateUserTheme(theme: string) {
-  const url = `${baseURL}/api/v1/user/settings/theme?theme=${theme}`
+  const url = `${baseURL}/api/v1/users/settings/theme?theme=${theme}`
   const requestParams = {
     method: 'PUT',
     headers: {
@@ -37,7 +37,7 @@ async function updateUserTheme(theme: string) {
 }
 
 async function updateUserGroupBy(groupBy: GroupsEnum) {
-  const url = `${baseURL}/api/v1/user/settings/group_by?group_by=${groupBy}`
+  const url = `${baseURL}/api/v1/users/settings/group_by?group_by=${groupBy}`
   const requestParams = {
     method: 'PUT',
     headers: {
