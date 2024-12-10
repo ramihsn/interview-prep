@@ -54,7 +54,10 @@ def _wrap_factory(func):
 
 @_wrap_factory
 def factory(name: str, logger: Logger, service: Service, schema_module: SchemaModule) -> APIRouter:
-    router = APIRouter(prefix=f'/{name}')
+    if name.endswith('s'):
+        router = APIRouter(prefix=f'/{name}')
+    else:
+        router = APIRouter(prefix=f'/{name}s')
 
     # Dependency to get item by ID
     async def get_item_or_404(
