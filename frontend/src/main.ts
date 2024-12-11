@@ -15,11 +15,12 @@ import {
   faFileCode,
   faFileExcel,
   faTrashCan,
+  faCircleExclamation,
   faPenToSquare,
 } from '@fortawesome/free-solid-svg-icons'
 
 // /* add icons to the library */
-library.add([faFileCsv, faFileCode, faFileExcel, faTrashCan, faPenToSquare])
+library.add([faFileCsv, faFileCode, faFileExcel, faTrashCan, faPenToSquare, faCircleExclamation])
 
 const pinia = createPinia()
 createApp(App).use(pinia).component('font-awesome-icon', FontAwesomeIcon).use(router).mount('#app')
