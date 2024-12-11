@@ -2,13 +2,17 @@
 import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+const emit = defineEmits(['addPosition', 'close'])
+defineProps({ inModule: { type: Boolean, required: false, default: false } })
+
+// Variables
 const company = ref('')
 const title = ref('')
 const description = ref('')
 const hasError = ref(false)
 
-const emit = defineEmits(['addPosition'])
-const addPosition = () => {
+// Functions
+function addPosition() {
   if (!company.value || !title.value || !description.value) {
     hasError.value = true
     setTimeout(() => {
@@ -29,6 +33,13 @@ const addPosition = () => {
 
 <template>
   <div class="card bg-base-300 shadow-xl">
+    <div
+      v-if="inModule"
+      class="absolute top-4 left-5 bg-red-500 text-white py-2 px-3 rounded-full cursor-pointer hover:bg-red-700"
+    >
+      <FontAwesomeIcon icon="xmark" size="xl" @click="$emit('close')" />
+    </div>
+
     <div class="card-body">
       <div class="card-title justify-center mb-5">
         <h1>Add New Position</h1>

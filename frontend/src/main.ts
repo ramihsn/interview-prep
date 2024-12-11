@@ -11,16 +11,27 @@ import router from './router'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
+  faPlus,
+  faFileCsv,
+  faFileCode,
+  faTrashCan,
+  faFileExcel,
+  faPenToSquare,
+  faCircleExclamation,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons'
+
+// /* add icons to the library */
+library.add([
+  faPlus,
+  faXmark,
   faFileCsv,
   faFileCode,
   faFileExcel,
   faTrashCan,
-  faCircleExclamation,
   faPenToSquare,
-} from '@fortawesome/free-solid-svg-icons'
-
-// /* add icons to the library */
-library.add([faFileCsv, faFileCode, faFileExcel, faTrashCan, faPenToSquare, faCircleExclamation])
+  faCircleExclamation,
+])
 
 const pinia = createPinia()
 createApp(App).use(pinia).component('font-awesome-icon', FontAwesomeIcon).use(router).mount('#app')
