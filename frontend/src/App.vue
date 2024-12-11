@@ -13,8 +13,10 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <main :data-theme="userSettingsStore.theme">
-    <NavBar />
-    <RouterView />
+  <main :data-theme="userSettingsStore.theme" class="flex flex-col h-screen">
+    <NavBar class="h-[8vh]" />
+    <div class="h-[93vh] overflow-auto">
+      <RouterView />
+    </div>
   </main>
 </template>
