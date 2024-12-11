@@ -11,6 +11,9 @@ const emit = defineEmits(['addPosition'])
 const addPosition = () => {
   if (!company.value || !title.value || !description.value) {
     hasError.value = true
+    setTimeout(() => {
+      hasError.value = false
+    }, 5000)
     return
   }
   emit('addPosition', {
@@ -39,6 +42,7 @@ const addPosition = () => {
           <td>
             <input
               class="input input-bordered input-primary w-full"
+              :class="{ 'border-2 border-rose-500': hasError && !company }"
               type="text"
               v-model="company"
             />
@@ -49,7 +53,12 @@ const addPosition = () => {
             <label for="title">Title</label>
           </th>
           <td>
-            <input class="input input-bordered input-primary w-full" type="text" v-model="title" />
+            <input
+              class="input input-bordered input-primary w-full"
+              :class="{ 'border-2 border-rose-500': hasError && !title }"
+              type="text"
+              v-model="title"
+            />
           </td>
         </tr>
         <tr>
@@ -59,6 +68,7 @@ const addPosition = () => {
           <td>
             <textarea
               class="textarea textarea-primary w-full"
+              :class="{ 'border-2 border-rose-500': hasError && !description }"
               rows="5"
               v-model="description"
             ></textarea>
@@ -76,12 +86,25 @@ const addPosition = () => {
         </button>
       </div>
 
-      <div class="bg-warning border-2 border-rose-500 rounded-lg flex flex-row" v-if="hasError">
-        <span class="mx-2">
-          <FontAwesomeIcon icon="circle-exclamation" style="color: #e42807" />
-        </span>
-        <strong>All fields must be filled before adding the position</strong>
-      </div>
+      <transition name="fade" appear>
+        <div class="bg-warning border-2 border-rose-500 rounded-lg flex flex-row" v-if="hasError">
+          <span class="mx-2">
+            <FontAwesomeIcon icon="circle-exclamation" style="color: #e42807" />
+          </span>
+          <strong>All fields must be filled before adding the position</strong>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
