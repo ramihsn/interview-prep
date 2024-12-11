@@ -3,33 +3,12 @@ import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import type { PositionType } from '@/types'
-import PositionForm from './positions/PositionForm.vue'
+import PositionForm from './PositionForm.vue'
 import ModuleComponent from '@/components/ModuleComponent.vue'
-import PositionComponent from './positions/PositionComponent.vue'
+import PositionComponent from './PositionComponent.vue'
 
 // Variables
-const positions = ref<PositionType[]>([
-  {
-    company: 'Google',
-    title: 'Software Engineer',
-    description: 'Work on the Google Search team',
-  },
-  {
-    company: 'Facebook',
-    title: 'Software Engineer',
-    description: 'Work on the Facebook Ads team',
-  },
-  {
-    company: 'Amazon',
-    title: 'Software Engineer',
-    description: 'Work on the Amazon Web Services team',
-  },
-  {
-    company: 'Microsoft',
-    title: 'Software Engineer',
-    description: 'Work on the Microsoft Office team',
-  },
-]) // TODO: fetch positions
+const positions = ref<PositionType[]>([]) // TODO: fetch positions
 const addNewPosition = ref(false)
 const selectedPosition = ref<PositionType | null>(positions.value[0])
 
