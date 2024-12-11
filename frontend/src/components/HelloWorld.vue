@@ -2,29 +2,47 @@
 import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import type { PositionType } from '@/types'
 import PositionForm from './positions/PositionForm.vue'
 import ModuleComponent from '@/components/ModuleComponent.vue'
 import PositionComponent from './positions/PositionComponent.vue'
 
-const positions = ref<Position[]>([
-  // {
-  //   company: 'Google',
-  //   title: 'Software Engineer',
-  //   description: 'Work on the Google Search team',
-  // },
+// Variables
+const positions = ref<PositionType[]>([
+  {
+    company: 'Google',
+    title: 'Software Engineer',
+    description: 'Work on the Google Search team',
+  },
+  {
+    company: 'Facebook',
+    title: 'Software Engineer',
+    description: 'Work on the Facebook Ads team',
+  },
+  {
+    company: 'Amazon',
+    title: 'Software Engineer',
+    description: 'Work on the Amazon Web Services team',
+  },
+  {
+    company: 'Microsoft',
+    title: 'Software Engineer',
+    description: 'Work on the Microsoft Office team',
+  },
 ]) // TODO: fetch positions
 const addNewPosition = ref(false)
 
-interface Position {
-  company: string
-  title: string
-  description: string
-}
-
-const onAddPosition = (position: Position) => {
+// Functions
+const onAddPosition = (position: PositionType) => {
   positions.value.push(position)
   addNewPosition.value = false
   // TODO: save to database
+}
+
+const onDeletePosition = (position: PositionType) => {
+  console.log('Deleting position', position)
+  positions.value = positions.value.filter((pos) => pos !== position)
+  // TODO: delete from database
 }
 </script>
 
@@ -41,10 +59,13 @@ const onAddPosition = (position: Position) => {
       </ModuleComponent>
     </Teleport>
 
-    <div v-if="positions.length !== 0">
-      <div v-for="(pos, i) in positions" :key="i" :pos="pos">
-        <PositionComponent :pos="pos" />
-        <hr class="my-5" />
+    <!-- show the positions here if exists -->
+    <div
+      v-if="positions.length !== 0"
+      class="flex flex-col items-center justify-center h-full w-full"
+    >
+      <div v-for="(pos, i) in positions" :key="i" :pos="pos" class="my-3 w-2/3">
+        <PositionComponent :position="pos" @deletePosition="onDeletePosition" />
       </div>
 
       <div class="fixed bottom-6 right-10 flex space-x-4">

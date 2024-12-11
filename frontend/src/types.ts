@@ -16,3 +16,10 @@ export interface AnswerType {
   question_id?: number
   question?: QuestionType
 }
+
+export interface PositionType {
+  id?: number | null
+  company: string
+  title: string
+  description: string
+}
