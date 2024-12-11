@@ -1,9 +1,25 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import MarkdownIt from 'markdown-it'
 import type { PositionType } from '@/types'
 
-defineProps<{ position: PositionType }>()
+const props = defineProps<{ position: PositionType }>()
 defineEmits(['deletePosition'])
+
+function toTitleCase(str: string) {
+  return str
+    .toString()
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+}
+
+// Markdown Rendering
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true,
+})
+const renderedMarkdown = md.render(props.position.description)
 </script>
 
 <template>
@@ -21,12 +37,12 @@ defineEmits(['deletePosition'])
     <!-- Position Content -->
     <div class="card-body">
       <div class="flex flex-col items-center mb-5">
-        <h1 class="text-2xl font-bold mb-1">{{ position.company }}</h1>
-        <h2 class="text-lg text-gray-700">{{ position.title }}</h2>
+        <h1 class="text-2xl font-bold mb-1">{{ toTitleCase(position.company) }}</h1>
+        <h2 class="text-lg text-gray-700">{{ toTitleCase(position.title) }}</h2>
       </div>
 
       <div>
-        {{ position.description }}
+        <div v-html="renderedMarkdown" class="prose max-w-none"></div>
       </div>
     </div>
   </div>
