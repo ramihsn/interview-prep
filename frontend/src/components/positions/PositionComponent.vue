@@ -2,9 +2,13 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import MarkdownIt from 'markdown-it'
 import type { PositionType } from '@/types'
+import { computed } from 'vue'
 
-const props = defineProps<{ position: PositionType }>()
-defineEmits(['deletePosition'])
+const props = defineProps<{
+  position: PositionType
+  isSelected: boolean
+}>()
+defineEmits(['deletePosition', 'selectPosition'])
 
 function toTitleCase(str: string) {
   return str
@@ -20,29 +24,56 @@ const md = new MarkdownIt({
   typographer: true,
 })
 const renderedMarkdown = md.render(props.position.description)
+const positionDesorption = computed(() => {
+  if (renderedMarkdown.length <= 250) {
+    return renderedMarkdown
+  }
+  return renderedMarkdown.slice(0, 250) + ' ...'
+})
 </script>
 
 <template>
-  <div class="card bg-base-300 shadow-xl">
+  <div
+    class="card shadow-xl no-select"
+    @click="$emit('selectPosition', position)"
+    :class="{ 'bg-primary': isSelected, 'bg-accent': !isSelected }"
+  >
     <!-- Delete button -->
-    <div class="absolute top-4 right-5">
+    <div
+      class="absolute top-3 right-4 p-1 cursor-pointer hover:animate-bounce-once"
+      @click.stop="$emit('deletePosition', position)"
+    >
       <FontAwesomeIcon
         icon="trash-can"
         size="lg"
-        @click="$emit('deletePosition', position)"
-        class="text-gray-600 hover:text-red-600 hover:animate-bounce-once cursor-pointer"
+        class="hover:text-red-600"
+        :class="{ 'text-primary-content': isSelected, 'text-accent-content': !isSelected }"
       />
     </div>
 
     <!-- Position Content -->
     <div class="card-body">
       <div class="flex flex-col items-center mb-5">
-        <h1 class="text-2xl font-bold mb-1">{{ toTitleCase(position.company) }}</h1>
-        <h2 class="text-lg text-gray-700">{{ toTitleCase(position.title) }}</h2>
+        <h1
+          :class="{ 'text-primary-content': isSelected, 'text-accent-content': !isSelected }"
+          class="text-2xl font-bold mb-1"
+        >
+          {{ toTitleCase(position.company) }}
+        </h1>
+        <h2
+          :class="{ 'text-primary-content': isSelected, 'text-accent-content': !isSelected }"
+          class="text-lg text-gray-700"
+        >
+          {{ toTitleCase(position.title) }}
+        </h2>
       </div>
 
       <div>
-        <div v-html="renderedMarkdown" class="prose max-w-none"></div>
+        <div
+          v-html="positionDesorption"
+          class="prose max-w-none"
+          :class="{ 'text-primary-content': isSelected, 'text-secondary-content': !isSelected }"
+        ></div>
       </div>
     </div>
   </div>

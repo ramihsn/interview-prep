@@ -31,6 +31,7 @@ const positions = ref<PositionType[]>([
   },
 ]) // TODO: fetch positions
 const addNewPosition = ref(false)
+const selectedPosition = ref<PositionType | null>(positions.value[0])
 
 // Functions
 const onAddPosition = (position: PositionType) => {
@@ -42,7 +43,18 @@ const onAddPosition = (position: PositionType) => {
 const onDeletePosition = (position: PositionType) => {
   console.log('Deleting position', position)
   positions.value = positions.value.filter((pos) => pos !== position)
+  if (selectedPosition.value === position) {
+    selectedPosition.value = positions.value[0]
+  }
   // TODO: delete from database
+}
+
+const onSelectPosition = (position: PositionType) => {
+  if (selectedPosition.value === position) {
+    if (positions.value.length > 1) selectedPosition.value = positions.value[0]
+  } else {
+    selectedPosition.value = position
+  }
 }
 </script>
 
@@ -65,7 +77,12 @@ const onDeletePosition = (position: PositionType) => {
       class="flex flex-col items-center justify-center h-full w-full"
     >
       <div v-for="(pos, i) in positions" :key="i" :pos="pos" class="my-3 w-2/3">
-        <PositionComponent :position="pos" @deletePosition="onDeletePosition" />
+        <PositionComponent
+          :position="pos"
+          :isSelected="selectedPosition === pos || positions.length === 1"
+          @deletePosition="onDeletePosition"
+          @selectPosition="onSelectPosition"
+        />
       </div>
 
       <div class="fixed bottom-6 right-10 flex space-x-4">
