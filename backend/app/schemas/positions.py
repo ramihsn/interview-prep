@@ -7,6 +7,7 @@ from . import helpers
 class _BasePosition(sqlmodel.SQLModel):
     company: str
     title: str
+    description: str
 
 
 class PositionCreate(_BasePosition):

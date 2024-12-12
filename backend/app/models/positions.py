@@ -7,3 +7,4 @@ class Position(sqlmodel.SQLModel, table=True):
     id: int = sqlmodel.Field(primary_key=True, index=True)
     company: str
     title: str
+    description: str
