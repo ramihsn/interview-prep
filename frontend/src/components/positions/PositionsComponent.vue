@@ -1,16 +1,24 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import type { PositionType } from '@/types'
 import PositionForm from './PositionForm.vue'
-import ModuleComponent from '@/components/ModuleComponent.vue'
 import PositionComponent from './PositionComponent.vue'
+import { useUserSettingsStore } from '@/stores/userSettings'
+import ModuleComponent from '@/components/ModuleComponent.vue'
+
+const userSettingsStore = useUserSettingsStore()
 
 // Variables
 const positions = ref<PositionType[]>([]) // TODO: fetch positions
 const addNewPosition = ref(false)
-const selectedPosition = ref<PositionType | null>(positions.value[0])
+const selectedPosition = ref<PositionType | null>(null)
+
+// Lifecycle Hooks
+onMounted(() => {
+  selectedPosition.value = positions.value[userSettingsStore.positionIndex]
+})
 
 // Functions
 const onAddPosition = (position: PositionType) => {
@@ -21,18 +29,20 @@ const onAddPosition = (position: PositionType) => {
 
 const onDeletePosition = (position: PositionType) => {
   console.log('Deleting position', position)
+  if (selectedPosition.value === position) onSelectPosition(position)
   positions.value = positions.value.filter((pos) => pos !== position)
-  if (selectedPosition.value === position) {
-    selectedPosition.value = positions.value[0]
-  }
   // TODO: delete from database
 }
 
 const onSelectPosition = (position: PositionType) => {
   if (selectedPosition.value === position) {
-    if (positions.value.length > 1) selectedPosition.value = positions.value[0]
+    if (positions.value.length > 1) {
+      selectedPosition.value = positions.value[0]
+      userSettingsStore.setPositionIndex(0)
+    }
   } else {
     selectedPosition.value = position
+    userSettingsStore.setPositionIndex(position.id ?? -1)
   }
 }
 </script>
@@ -55,7 +65,7 @@ const onSelectPosition = (position: PositionType) => {
       v-if="positions.length !== 0"
       class="flex flex-col items-center justify-center h-full w-full"
     >
-      <div v-for="(pos, i) in positions" :key="i" :pos="pos" class="my-3 w-2/3">
+      <div v-for="pos in positions" :key="pos.id ?? -1" :pos="pos" class="my-3 w-2/3">
         <PositionComponent
           :position="pos"
           :isSelected="selectedPosition === pos || positions.length === 1"

@@ -56,10 +56,11 @@ async function updateUserGroupBy(groupBy: GroupsEnum) {
   return data
 }
 
-export const useUserSettingsStore = defineStore('counter', {
+export const useUserSettingsStore = defineStore('userSettings', {
   state: () => ({
     theme: Theme.DARK as string,
     groupBy: GroupsEnum.none,
+    _positionIndex: 0,
   }),
   actions: {
     setTheme(theme: string) {
@@ -82,8 +83,13 @@ export const useUserSettingsStore = defineStore('counter', {
       const newTheme = toggleTheme(this.theme)
       this.setTheme(newTheme)
     },
+    setPositionIndex(index: number) {
+      this._positionIndex = index
+      // TODO: save the position index in the database
+    },
   },
   getters: {
     isDarkTheme: (state) => isDarkTheme(state.theme),
+    positionIndex: (state) => state._positionIndex,
   },
 })
