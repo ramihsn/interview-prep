@@ -9,6 +9,9 @@ const pageName = computed(() => router.name)
 
 const userSettingsStore = useUserSettingsStore()
 const isDark = computed(() => userSettingsStore.isDarkTheme)
+const isJobDisabled = computed(
+  () => userSettingsStore.positionIndex === null || userSettingsStore.positionIndex < 0,
+)
 </script>
 
 <template>
@@ -21,7 +24,7 @@ const isDark = computed(() => userSettingsStore.isDarkTheme)
     </div>
 
     <div class="navbar-end mr-4">
-      <div class="flex items-center space-x-0">
+      <div class="flex items-center space-x-2">
         <a
           @click="$router.push({ name: 'home' })"
           :class="{ shadow: pageName !== 'home' }"
@@ -36,8 +39,13 @@ const isDark = computed(() => userSettingsStore.isDarkTheme)
         >
         <a
           @click="$router.push({ name: 'job' })"
-          :class="{ shadow: pageName !== 'job' }"
-          class="btn btn-ghost"
+          :class="{
+            shadow: pageName !== 'job',
+            'btn-disabled': isJobDisabled,
+            'btn-ghost': !isJobDisabled,
+          }"
+          class="btn"
+          :aria-disabled="isJobDisabled"
           >Job</a
         >
 

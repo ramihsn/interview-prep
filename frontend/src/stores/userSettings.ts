@@ -60,7 +60,7 @@ export const useUserSettingsStore = defineStore('userSettings', {
   state: () => ({
     theme: Theme.DARK as string,
     groupBy: GroupsEnum.none,
-    _positionIndex: 0,
+    _positionIndex: 0 as number | null,
   }),
   actions: {
     setTheme(theme: string) {
@@ -77,13 +77,14 @@ export const useUserSettingsStore = defineStore('userSettings', {
       getUserSettings().then((data) => {
         this.theme = getTheme(data.theme)
         this.groupBy = data.questions_group_by as GroupsEnum
+        this._positionIndex = 0 // TODO: get the position index from the database
       })
     },
     toggleTheme() {
       const newTheme = toggleTheme(this.theme)
       this.setTheme(newTheme)
     },
-    setPositionIndex(index: number) {
+    setPositionIndex(index: number | null) {
       this._positionIndex = index
       // TODO: save the position index in the database
     },

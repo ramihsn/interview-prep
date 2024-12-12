@@ -17,7 +17,7 @@ const selectedPosition = ref<PositionType | null>(null)
 
 // Lifecycle Hooks
 onMounted(() => {
-  selectedPosition.value = positions.value[userSettingsStore.positionIndex]
+  selectedPosition.value = positions.value[userSettingsStore.positionIndex ?? 0]
 })
 
 // Functions
@@ -29,16 +29,18 @@ const onAddPosition = (position: PositionType) => {
 
 const onDeletePosition = (position: PositionType) => {
   console.log('Deleting position', position)
-  if (selectedPosition.value === position) onSelectPosition(position)
   positions.value = positions.value.filter((pos) => pos !== position)
+  if (selectedPosition.value === position) onSelectPosition(position)
   // TODO: delete from database
 }
 
 const onSelectPosition = (position: PositionType) => {
   if (selectedPosition.value === position) {
-    if (positions.value.length > 1) {
+    if (positions.value.length > 0) {
       selectedPosition.value = positions.value[0]
       userSettingsStore.setPositionIndex(0)
+    } else {
+      userSettingsStore.setPositionIndex(null)
     }
   } else {
     selectedPosition.value = position
