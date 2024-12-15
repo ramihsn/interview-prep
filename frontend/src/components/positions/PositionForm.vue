@@ -32,19 +32,12 @@ function addPosition() {
 </script>
 
 <template>
-  <div class="card bg-base-300 shadow-xl">
-    <div
-      v-if="inModule"
-      class="absolute top-4 left-5 bg-red-500 text-white py-2 px-3 rounded-full cursor-pointer hover:bg-red-700"
-    >
-      <FontAwesomeIcon icon="xmark" size="xl" @click="$emit('close')" />
-    </div>
+  <div class="modal-box">
+    <!-- Modal Header -->
+    <h3 class="text-lg font-bold text-info">Add New Position</h3>
 
-    <div class="card-body">
-      <div class="card-title justify-center mb-5">
-        <h1>Add New Position</h1>
-      </div>
-
+    <!-- Modal Body -->
+    <p class="py-4">
       <table class="table w-full">
         <tr>
           <th class="flex max-w-max pr-4">
@@ -87,16 +80,6 @@ function addPosition() {
         </tr>
       </table>
 
-      <div class="card-actions justify-end mt-3">
-        <button
-          :class="{ 'btn-primary': !hasError, 'btn-error': hasError }"
-          @click="addPosition"
-          class="btn rounded-lg"
-        >
-          Add Position
-        </button>
-      </div>
-
       <transition name="fade" appear>
         <div class="bg-warning border-2 border-rose-500 rounded-lg flex flex-row" v-if="hasError">
           <span class="mx-2">
@@ -105,6 +88,14 @@ function addPosition() {
           <strong>All fields must be filled before adding the position</strong>
         </div>
       </transition>
+    </p>
+
+    <!-- Modal Actions -->
+    <div class="modal-action flex justify-end space-x-4">
+      <!-- Cancel Button -->
+      <button class="btn btn-ghost" @click="$emit('close')">Cancel</button>
+      <!-- Confirm Button -->
+      <button class="btn btn-success" @click="addPosition">Add Position</button>
     </div>
   </div>
 </template>
