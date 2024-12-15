@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import type { PositionType } from '@/types'
 import PositionForm from './PositionForm.vue'
+import PositionDelete from './PositionDelete.vue'
+import { fetchPositions } from '@/api/positionService'
 import PositionComponent from './PositionComponent.vue'
 import { useUserSettingsStore } from '@/stores/userSettings'
 import ModuleComponent from '@/components/ModuleComponent.vue'
@@ -11,36 +13,54 @@ import ModuleComponent from '@/components/ModuleComponent.vue'
 const userSettingsStore = useUserSettingsStore()
 
 // Variables
-const positions = ref<PositionType[]>([]) // TODO: fetch positions
+const positions = ref<PositionType[]>([])
 const addNewPosition = ref(false)
+const deletePosition = ref(false)
 const selectedPosition = ref<PositionType | null>(null)
+const toBeDeletedPosition = ref<PositionType | null>(null)
 
 // Lifecycle Hooks
 onMounted(() => {
-  selectedPosition.value = positions.value[userSettingsStore.positionIndex ?? 0]
+  fetchPositions().then((data: PositionType[]) => {
+    positions.value = data
+    selectedPosition.value = positions.value[userSettingsStore.positionIndex ?? 0]
+  })
 })
 
-// Functions
-const onAddPosition = (position: PositionType) => {
-  positions.value.push(position)
+const onAddPosition = (newPosition: PositionType) => {
+  positions.value.push(newPosition)
   addNewPosition.value = false
-  // TODO: save to database
 }
 
 const onDeletePosition = (position: PositionType) => {
   console.log('Deleting position', position)
-  positions.value = positions.value.filter((pos) => pos !== position)
-  if (selectedPosition.value === position) onSelectPosition(position)
-  // TODO: delete from database
+  deletePosition.value = true
+  toBeDeletedPosition.value = position
 }
 
-const onSelectPosition = (position: PositionType) => {
+const onPositionDeleted = () => {
+  positions.value = positions.value.filter((pos) => pos !== toBeDeletedPosition.value)
+  if (selectedPosition.value === toBeDeletedPosition.value && toBeDeletedPosition.value) {
+    onSelectPosition(toBeDeletedPosition.value, { reset: true })
+    deletePosition.value = false
+  }
+}
+
+const onSelectPosition = (
+  position: PositionType,
+  options: { reset?: boolean } = { reset: false },
+) => {
+  const { reset } = options
+
   if (selectedPosition.value === position) {
-    if (positions.value.length > 0) {
-      selectedPosition.value = positions.value[0]
-      userSettingsStore.setPositionIndex(0)
-    } else {
-      userSettingsStore.setPositionIndex(null)
+    if (reset) {
+      if (positions.value.length > 0) {
+        selectedPosition.value = positions.value[0]
+        userSettingsStore.setPositionIndex(0)
+      } else {
+        selectedPosition.value = null
+        userSettingsStore.setPositionIndex(null)
+      }
     }
   } else {
     selectedPosition.value = position
@@ -53,12 +73,29 @@ const onSelectPosition = (position: PositionType) => {
   <div class="flex flex-col items-center justify-center pt-5 h-full">
     <Teleport to=".question-module" v-if="addNewPosition">
       <ModuleComponent @close="addNewPosition = false">
-        <PositionForm
-          class="mt-3 mb-12 w-2/3"
-          @addPosition="onAddPosition"
-          @close="addNewPosition = false"
-          :inModule="true"
-        />
+        <div class="flex items-center justify-center">
+          <PositionForm
+            class="mt-3 mb-12 w-2/3"
+            @addPosition="onAddPosition"
+            @close="addNewPosition = false"
+            :inModule="true"
+          />
+        </div>
+      </ModuleComponent>
+    </Teleport>
+
+    <Teleport to=".question-module" v-if="deletePosition">
+      <ModuleComponent @close="deletePosition = false">
+        <div class="flex items-center justify-center">
+          <PositionDelete
+            class="w-full"
+            :positionId="toBeDeletedPosition?.id ?? undefined"
+            :companyName="toBeDeletedPosition?.company ?? 'koko'"
+            :positionTitle="toBeDeletedPosition?.title ?? 'fofo'"
+            @close="deletePosition = false"
+            @confirm="onPositionDeleted"
+          />
+        </div>
       </ModuleComponent>
     </Teleport>
 
