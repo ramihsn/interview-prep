@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import type { PositionType } from '@/types'
+import Position from '@/models/Position'
 import PositionForm from './PositionForm.vue'
 import PositionDelete from './PositionDelete.vue'
 import { fetchPositions } from '@/api/positionService'
@@ -13,26 +13,26 @@ import ModuleComponent from '@/components/ModuleComponent.vue'
 const userSettingsStore = useUserSettingsStore()
 
 // Variables
-const positions = ref<PositionType[]>([])
+const positions = ref<Position[]>([])
 const addNewPosition = ref(false)
 const deletePosition = ref(false)
-const selectedPosition = ref<PositionType | null>(null)
-const toBeDeletedPosition = ref<PositionType | null>(null)
+const selectedPosition = ref<Position | null>(null)
+const toBeDeletedPosition = ref<Position | null>(null)
 
 // Lifecycle Hooks
 onMounted(() => {
-  fetchPositions().then((data: PositionType[]) => {
+  fetchPositions().then((data) => {
     positions.value = data
     selectedPosition.value = positions.value[userSettingsStore.positionIndex ?? 0]
   })
 })
 
-const onAddPosition = (newPosition: PositionType) => {
+const onAddPosition = (newPosition: Position) => {
   positions.value.push(newPosition)
   addNewPosition.value = false
 }
 
-const onDeletePosition = (position: PositionType) => {
+const onDeletePosition = (position: Position) => {
   console.log('Deleting position', position)
   deletePosition.value = true
   toBeDeletedPosition.value = position
@@ -46,10 +46,7 @@ const onPositionDeleted = () => {
   }
 }
 
-const onSelectPosition = (
-  position: PositionType,
-  options: { reset?: boolean } = { reset: false },
-) => {
+const onSelectPosition = (position: Position, options: { reset?: boolean } = { reset: false }) => {
   const { reset } = options
 
   if (selectedPosition.value === position) {
@@ -73,14 +70,12 @@ const onSelectPosition = (
   <div class="flex flex-col items-center justify-center pt-5 h-full">
     <Teleport to=".question-module" v-if="addNewPosition">
       <ModuleComponent @close="addNewPosition = false">
-        <div class="flex items-center justify-center">
-          <PositionForm
-            class="mt-3 mb-12 w-2/3"
-            @addPosition="onAddPosition"
-            @close="addNewPosition = false"
-            :inModule="true"
-          />
-        </div>
+        <PositionForm
+          class="mt-3 mb-12 w-full"
+          @addPosition="onAddPosition"
+          @close="addNewPosition = false"
+          :inModule="true"
+        />
       </ModuleComponent>
     </Teleport>
 

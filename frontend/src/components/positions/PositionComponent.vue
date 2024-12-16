@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import MarkdownIt from 'markdown-it'
-import type { PositionType } from '@/types'
+import Position from '@/models/Position'
 import { computed } from 'vue'
 
 const props = defineProps<{
-  position: PositionType
+  position: Position
   isSelected: boolean
 }>()
 defineEmits(['deletePosition', 'selectPosition'])
