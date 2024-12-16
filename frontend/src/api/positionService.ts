@@ -1,14 +1,15 @@
 import httpClient from './httpClient'
-import type { PositionType } from '@/types'
+import Position from '@/models/Position'
+import PositionCreate from '@/models/PositionCreate'
 
-export const fetchPositions = async (): Promise<PositionType[]> => {
+export const fetchPositions = async (): Promise<Position[]> => {
   const response = await httpClient.get('/v1/positions')
-  return response.data
+  return response.data as Position[]
 }
 
-export const createPosition = async (position: PositionType): Promise<PositionType> => {
+export const createPosition = async (position: PositionCreate): Promise<Position> => {
   const response = await httpClient.post('/v1/positions', position)
-  return response.data
+  return response.data as Position
 }
 
 export const deletePosition = async (id: number): Promise<void> => {
