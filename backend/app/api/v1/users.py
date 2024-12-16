@@ -28,6 +28,6 @@ async def set_user_group_by(group_by: str, db=Depends(db.session.get_db)):
 
 
 @router.put('/settings/position', response_model=users_models.UserSettings)
-async def set_user_position(position_id: int, db=Depends(db.session.get_db)):
+async def set_user_position(position_id: int = None, db=Depends(db.session.get_db)):
     logger.info(f'Setting user position to {position_id}')
     return await users_service.set_user_position(db, position_id)
