@@ -7,6 +7,11 @@ export const fetchPositions = async (): Promise<Position[]> => {
   return response.data as Position[]
 }
 
+export const fetchPosition = async (id: number): Promise<Position> => {
+  const response = await httpClient.get(`/v1/positions/${id}`)
+  return response.data as Position
+}
+
 export const createPosition = async (position: PositionCreate): Promise<Position> => {
   const response = await httpClient.post('/v1/positions', position)
   return response.data as Position

@@ -7,7 +7,10 @@ export const fetchUserSettings = async (): Promise<UserSettings> => {
 }
 
 export const updateUserTheme = async (theme: string): Promise<UserSettings> => {
-  const response = await httpClient.put('/v1/users/settings/theme', { theme })
+  const response = await httpClient.put('/v1/users/settings/theme', null, {
+    params: { theme },
+    headers: { 'Content-Type': 'application/json' },
+  })
   return response.data as UserSettings
 }
 

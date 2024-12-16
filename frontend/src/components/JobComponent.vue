@@ -1,29 +1,52 @@
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import MarkdownIt from 'markdown-it'
+
+import { fetchPosition } from '@/api/positionService'
+import { useUserSettingsStore } from '@/stores/userSettings'
+
+const userSettingsStore = useUserSettingsStore()
+const md = MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true,
+})
+
+const position = ref(
+  userSettingsStore.selectedPosition ?? {
+    company: 'Company Name',
+    title: 'Job Title',
+    description: 'Job Description',
+  },
+)
+const positionDescription = ref(position.value.description)
+
+onMounted(() => {
+  positionDescription.value = md.render(position.value.description)
+  if (userSettingsStore.selectedPosition === null) {
+    console.log(`Fetching position at index ${userSettingsStore.positionIndex}`)
+    fetchPosition(userSettingsStore.positionIndex ?? 0).then((fetchedPos) => {
+      position.value = fetchedPos
+      positionDescription.value = md.render(fetchedPos.description)
+    })
+  }
+})
+</script>
+
 <template>
-  <div class="wrapper bg-primary text-primary-content">
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 rounded">
-      <div role="alert" class="alert">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          class="stroke-info h-6 w-6 shrink-0"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          ></path>
-        </svg>
-        <span class="text-primary-content">TBD</span>
+  <div class="min-h-screen flex items-center justify-center p-6 bg-primary w-full">
+    <div class="w-2/3">
+      <div class="bg-secondary text-secondary-content py-6 rounded-t-lg">
+        <h2 class="text-2xl font-bold text-center">{{ position.company }}</h2>
+      </div>
+
+      <div class="p-6">
+        <h3 class="text-xl font-semibold text-secondary-content text-center mb-6">
+          {{ position.title }}
+        </h3>
+
+        <div v-html="positionDescription" class="prose max-w-none text-secondary-content"></div>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.wrapper {
-  height: 93vh;
-  width: 100%;
-}
-</style>
