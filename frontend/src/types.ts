@@ -31,3 +31,10 @@ export interface PositionCreateType {
 export interface PositionType extends PositionCreateType {
   id: number
 }
+
+export interface UserSettingsType {
+  id: number
+  theme: string
+  questions_group_by: string
+  selected_position_id: number | null
+}
