@@ -22,6 +22,10 @@ const toBeDeletedPosition = ref<Position | null>(null)
 // Lifecycle Hooks
 onMounted(() => {
   fetchPositions().then((data) => {
+    if (data.length === 0) {
+      return
+    }
+
     positions.value = data
     if (userSettingsStore.positionIndex === null) {
       selectedPosition.value = positions.value[0]
@@ -37,6 +41,10 @@ onMounted(() => {
 const onAddPosition = (newPosition: Position) => {
   positions.value.push(newPosition)
   addNewPosition.value = false
+  if (positions.value.length === 1) {
+    onSelectPosition(newPosition)
+    userSettingsStore.setPositionIndex(newPosition.id)
+  }
 }
 
 const onDeletePosition = (position: Position) => {
@@ -50,6 +58,10 @@ const onPositionDeleted = () => {
   if (selectedPosition.value === toBeDeletedPosition.value && toBeDeletedPosition.value) {
     onSelectPosition(toBeDeletedPosition.value, { reset: true })
     deletePosition.value = false
+  }
+
+  if (positions.value.length === 0) {
+    userSettingsStore.setPositionIndex(null)
   }
 }
 
