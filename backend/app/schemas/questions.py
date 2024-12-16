@@ -10,6 +10,7 @@ class QuestionBase(sqlmodel.SQLModel):
     question: str
     answered: bool = False
 
+    position_id: int
     answer: AnswerRead | None = None
 
 

@@ -13,5 +13,5 @@ class Question(sqlmodel.SQLModel, table=True):
     question: str = sqlmodel.Field()
     answered: bool = sqlmodel.Field(default=False)
 
-    # Relationship to Answer with nullable=True
+    position_id: int = sqlmodel.Field(foreign_key="positions.id")
     answer: Answer | None = sqlmodel.Relationship(back_populates="question", cascade_delete=True)
