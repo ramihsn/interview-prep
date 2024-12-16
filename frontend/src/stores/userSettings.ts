@@ -1,66 +1,21 @@
 import { defineStore } from 'pinia'
 
+import Position from '@/models/Position'
 import { GroupsEnum } from '@/enums/GroupsEnum'
 import { Theme, getTheme, isDarkTheme, toggleTheme } from '@/themes'
-
-const baseURL = import.meta.env.VITE_BASE_URL
-
-async function getUserSettings() {
-  const response = await fetch(`${baseURL}/api/v1/users/settings`)
-  if (!response.ok) {
-    console.error(await response.json())
-    throw new Error('An error occurred while fetching the user settings')
-  }
-  const data: { theme?: string; questions_group_by?: string } = await response.json()
-
-  return data
-}
-
-async function updateUserTheme(theme: string) {
-  const url = `${baseURL}/api/v1/users/settings/theme?theme=${theme}`
-  const requestParams = {
-    method: 'PUT',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-  }
-
-  const response = await fetch(url, requestParams)
-  if (!response.ok) {
-    console.error(await response.json())
-    throw new Error('An error occurred while updating the theme')
-  }
-  const data = await response.json()
-
-  return data
-}
-
-async function updateUserGroupBy(groupBy: GroupsEnum) {
-  const url = `${baseURL}/api/v1/users/settings/group_by?group_by=${groupBy}`
-  const requestParams = {
-    method: 'PUT',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-  }
-
-  const response = await fetch(url, requestParams)
-  if (!response.ok) {
-    console.error(await response.json())
-    throw new Error('An error occurred while updating the group by')
-  }
-  const data = await response.json()
-
-  return data
-}
+import {
+  fetchUserSettings,
+  updateUserGroupBy,
+  updateUserTheme,
+  updateUserPosition,
+} from '@/api/userSettingsService'
 
 export const useUserSettingsStore = defineStore('userSettings', {
   state: () => ({
     theme: Theme.DARK as string,
     groupBy: GroupsEnum.none,
     _positionIndex: 0 as number | null,
+    selectedPosition: null as Position | null,
   }),
   actions: {
     setTheme(theme: string) {
@@ -74,19 +29,34 @@ export const useUserSettingsStore = defineStore('userSettings', {
       })
     },
     async fetchUserSettings() {
-      getUserSettings().then((data) => {
-        this.theme = getTheme(data.theme)
-        this.groupBy = data.questions_group_by as GroupsEnum
-        this._positionIndex = 0 // TODO: get the position index from the database
-      })
+      const userSettings = await fetchUserSettings()
+      this.theme = getTheme(userSettings.theme)
+      this.groupBy = userSettings.questions_group_by as GroupsEnum
+      this._positionIndex = userSettings.selected_position_id
     },
     toggleTheme() {
       const newTheme = toggleTheme(this.theme)
       this.setTheme(newTheme)
     },
     setPositionIndex(index: number | null) {
-      this._positionIndex = index
-      // TODO: save the position index in the database
+      updateUserPosition(index)
+        .then((newUserSettings) => {
+          this._positionIndex = newUserSettings.selected_position_id
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+    toString() {
+      return JSON.stringify(
+        {
+          theme: this.theme,
+          groupBy: this.groupBy,
+          positionIndex: this._positionIndex,
+        },
+        null,
+        2,
+      )
     },
   },
   getters: {

@@ -12,11 +12,17 @@ export const updateUserTheme = async (theme: string): Promise<UserSettings> => {
 }
 
 export const updateUserGroupBy = async (groupBy: string): Promise<UserSettings> => {
-  const response = await httpClient.put('/v1/users/settings/group_by', { group_by: groupBy })
+  const response = await httpClient.put('/v1/users/settings/group_by', null, {
+    params: { group_by: groupBy },
+    headers: { 'Content-Type': 'application/json' },
+  })
   return response.data as UserSettings
 }
 
 export const updateUserPosition = async (positionId: number | null): Promise<UserSettings> => {
-  const response = await httpClient.put('/v1/users/settings/position', { position_id: positionId })
+  const response = await httpClient.put('/v1/users/settings/position', null, {
+    params: { position_id: positionId },
+    headers: { 'Content-Type': 'application/json' },
+  })
   return response.data as UserSettings
 }

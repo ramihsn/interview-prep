@@ -23,7 +23,14 @@ const toBeDeletedPosition = ref<Position | null>(null)
 onMounted(() => {
   fetchPositions().then((data) => {
     positions.value = data
-    selectedPosition.value = positions.value[userSettingsStore.positionIndex ?? 0]
+    if (userSettingsStore.positionIndex === null) {
+      selectedPosition.value = positions.value[0]
+      userSettingsStore.setPositionIndex(positions.value[0].id)
+    } else {
+      selectedPosition.value =
+        positions.value.find((pos) => pos.id === userSettingsStore.positionIndex) ??
+        positions.value[0]
+    }
   })
 })
 
@@ -53,15 +60,18 @@ const onSelectPosition = (position: Position, options: { reset?: boolean } = { r
     if (reset) {
       if (positions.value.length > 0) {
         selectedPosition.value = positions.value[0]
-        userSettingsStore.setPositionIndex(0)
+        userSettingsStore.setPositionIndex(positions.value[0].id)
+        userSettingsStore.selectedPosition = positions.value[0]
       } else {
         selectedPosition.value = null
         userSettingsStore.setPositionIndex(null)
+        userSettingsStore.selectedPosition = null
       }
     }
   } else {
     selectedPosition.value = position
-    userSettingsStore.setPositionIndex(position.id ?? -1)
+    userSettingsStore.setPositionIndex(position.id)
+    userSettingsStore.selectedPosition = position
   }
 }
 </script>
