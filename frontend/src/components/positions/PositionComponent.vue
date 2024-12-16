@@ -36,7 +36,7 @@ const positionDesorption = computed(() => {
   <div
     class="card shadow-xl no-select"
     @click="$emit('selectPosition', position)"
-    :class="{ 'bg-primary': isSelected, 'bg-accent': !isSelected }"
+    :class="{ 'bg-secondary': isSelected, 'bg-neutral': !isSelected }"
   >
     <!-- Delete button -->
     <div
@@ -47,7 +47,7 @@ const positionDesorption = computed(() => {
         icon="trash-can"
         size="lg"
         class="hover:text-red-600"
-        :class="{ 'text-primary-content': isSelected, 'text-accent-content': !isSelected }"
+        :class="{ 'text-secondary-content': isSelected, 'text-neutral-content': !isSelected }"
       />
     </div>
 
@@ -55,14 +55,14 @@ const positionDesorption = computed(() => {
     <div class="card-body">
       <div class="flex flex-col items-center mb-5">
         <h1
-          :class="{ 'text-primary-content': isSelected, 'text-accent-content': !isSelected }"
+          :class="{ 'text-secondary-content': isSelected, 'text-neutral-content': !isSelected }"
           class="text-2xl font-bold mb-1"
         >
           {{ toTitleCase(position.company) }}
         </h1>
         <h2
-          :class="{ 'text-primary-content': isSelected, 'text-accent-content': !isSelected }"
-          class="text-lg text-gray-700"
+          :class="{ 'text-secondary-content': isSelected, 'text-neutral-content': !isSelected }"
+          class="text-lg"
         >
           {{ toTitleCase(position.title) }}
         </h2>
@@ -72,7 +72,7 @@ const positionDesorption = computed(() => {
         <div
           v-html="positionDesorption"
           class="prose max-w-none"
-          :class="{ 'text-primary-content': isSelected, 'text-secondary-content': !isSelected }"
+          :class="{ 'text-secondary-content': isSelected, 'text-neutral-content': !isSelected }"
         ></div>
       </div>
     </div>
