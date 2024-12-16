@@ -1,21 +1,16 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import MarkdownIt from 'markdown-it'
-import Position from '@/models/Position'
 import { computed } from 'vue'
+
+import { toTitleCase } from '@/helpers/string'
+import Position from '@/models/Position'
 
 const props = defineProps<{
   position: Position
   isSelected: boolean
 }>()
 defineEmits(['deletePosition', 'selectPosition'])
-
-function toTitleCase(str: string) {
-  return str
-    .toString()
-    .toLowerCase()
-    .replace(/\b\w/g, (char) => char.toUpperCase())
-}
 
 // Markdown Rendering
 const md = new MarkdownIt({

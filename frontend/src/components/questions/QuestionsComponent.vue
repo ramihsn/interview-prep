@@ -2,12 +2,14 @@
 import { onMounted, ref, computed } from 'vue'
 
 import { useUserSettingsStore } from '@/stores/userSettings'
+import { fetchPosition } from '@/api/positionService'
 import ModuleComponent from '../ModuleComponent.vue'
 import QuestionsAdder from './QuestionsAdder.vue'
 import QuestionsGroup from './QuestionsGroup.vue'
-import DropdownMenu from '../DropdownMenu.vue'
 import { GroupsEnum } from '@/enums/GroupsEnum'
 import type { QuestionType } from '../../types'
+import DropdownMenu from '../DropdownMenu.vue'
+import { toTitleCase } from '@/helpers/string'
 
 interface QuestionsGroup {
   idx: number
@@ -24,6 +26,12 @@ const questions = ref<QuestionType[]>([])
 
 onMounted(async () => {
   await fetchQuestions()
+  if (userSettingsStore.selectedPosition === null) {
+    console.log(`Fetching position at index ${userSettingsStore.positionIndex}`)
+    fetchPosition(userSettingsStore.positionIndex ?? 0).then((fetchedPos) => {
+      userSettingsStore.selectedPosition = fetchedPos
+    })
+  }
 })
 
 const groupedQuestions = computed<QuestionsGroup[]>(() => {
@@ -92,6 +100,12 @@ function onFileUploadedError(error: string) {
 
 <template>
   <div class="custom-container relative">
+    <div class="w-full text-center text-accent py-4">
+      <span class="px-2">{{ toTitleCase(userSettingsStore.selectedPosition?.company || '') }}</span>
+      <span class="px-2">|</span>
+      <span class="px-2">{{ toTitleCase(userSettingsStore.selectedPosition?.title || '') }}</span>
+    </div>
+
     <Teleport to=".question-module" v-if="addNewQuestion">
       <ModuleComponent @close="addNewQuestion = false">
         <QuestionsAdder

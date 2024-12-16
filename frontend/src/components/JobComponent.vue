@@ -26,6 +26,7 @@ onMounted(() => {
   if (userSettingsStore.selectedPosition === null) {
     console.log(`Fetching position at index ${userSettingsStore.positionIndex}`)
     fetchPosition(userSettingsStore.positionIndex ?? 0).then((fetchedPos) => {
+      userSettingsStore.selectedPosition = fetchedPos
       position.value = fetchedPos
       positionDescription.value = md.render(fetchedPos.description)
     })
