@@ -62,5 +62,6 @@ export const useUserSettingsStore = defineStore('userSettings', {
   getters: {
     isDarkTheme: (state) => isDarkTheme(state.theme),
     positionIndex: (state) => state._positionIndex,
+    hasPositions: (state) => state._positionIndex !== null,
   },
 })

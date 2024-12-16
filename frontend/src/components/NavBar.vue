@@ -9,9 +9,6 @@ const pageName = computed(() => router.name)
 
 const userSettingsStore = useUserSettingsStore()
 const isDark = computed(() => userSettingsStore.isDarkTheme)
-const isJobDisabled = computed(
-  () => userSettingsStore.positionIndex === null || userSettingsStore.positionIndex < 0,
-)
 </script>
 
 <template>
@@ -33,21 +30,26 @@ const isJobDisabled = computed(
         >
         <a
           @click="$router.push({ name: 'questions' })"
-          :class="{ shadow: pageName !== 'questions' }"
+          :class="{
+            shadow: pageName !== 'questions',
+            'btn-disabled': !userSettingsStore.hasPositions,
+            'btn-ghost': userSettingsStore.hasPositions,
+          }"
           class="btn btn-ghost"
-          >Questions</a
         >
+          Questions
+        </a>
         <a
           @click="$router.push({ name: 'job' })"
           :class="{
             shadow: pageName !== 'job',
-            'btn-disabled': isJobDisabled,
-            'btn-ghost': !isJobDisabled,
+            'btn-disabled': !userSettingsStore.hasPositions,
+            'btn-ghost': userSettingsStore.hasPositions,
           }"
           class="btn"
-          :aria-disabled="isJobDisabled"
-          >Job</a
         >
+          Job
+        </a>
 
         <div class="btn btn-ghost" @click="() => userSettingsStore.toggleTheme()">
           <img v-if="isDark" src="/dark-theme-svgrepo-com.svg" alt="Nvidia Logo" class="w-6 h-6" />
