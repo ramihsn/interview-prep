@@ -2,37 +2,37 @@
 import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import { createPosition } from '@/api/positionService'
+import PositionCreate from '@/models/PositionCreate';
+import Position from '@/models/Position';
+
 const emit = defineEmits(['addPosition', 'close'])
 defineProps({ inModule: { type: Boolean, required: false, default: false } })
 
 // Variables
-const company = ref('')
-const title = ref('')
-const description = ref('')
+const position = ref<PositionCreate>(new PositionCreate())
 const hasError = ref(false)
 
 // Functions
 function addPosition() {
-  if (!company.value || !title.value || !description.value) {
+  if (!position.value.isValid) {
     hasError.value = true
-    setTimeout(() => {
-      hasError.value = false
-    }, 5000)
+    setTimeout(() => hasError.value = false, 5000)
     return
   }
-  emit('addPosition', {
-    company: company.value,
-    title: title.value,
-    description: description.value,
+  createPosition(position.value).then((data) => {
+    emit('addPosition', data as Position)
+    position.value.clear()
+  }).catch((error) => {
+    console.error(error)
+    emit('close')
+    // TODO: maybe we should show the error to the user
   })
-  company.value = ''
-  title.value = ''
-  description.value = ''
 }
 </script>
 
 <template>
-  <div class="modal-box">
+  <div class="modal-box w-2/3 max-w-5xl">
     <!-- Modal Header -->
     <h3 class="text-lg font-bold text-info">Add New Position</h3>
 
@@ -46,9 +46,9 @@ function addPosition() {
           <td>
             <input
               class="input input-bordered input-primary w-full"
-              :class="{ 'border-2 border-rose-500': hasError && !company }"
+              :class="{ 'border-2 border-rose-500': hasError && !position.company }"
               type="text"
-              v-model="company"
+              v-model="position.company"
             />
           </td>
         </tr>
@@ -59,9 +59,9 @@ function addPosition() {
           <td>
             <input
               class="input input-bordered input-primary w-full"
-              :class="{ 'border-2 border-rose-500': hasError && !title }"
+              :class="{ 'border-2 border-rose-500': hasError && !position.title }"
               type="text"
-              v-model="title"
+              v-model="position.title"
             />
           </td>
         </tr>
@@ -72,9 +72,9 @@ function addPosition() {
           <td>
             <textarea
               class="textarea textarea-primary w-full"
-              :class="{ 'border-2 border-rose-500': hasError && !description }"
+              :class="{ 'border-2 border-rose-500': hasError && !position.description }"
               rows="5"
-              v-model="description"
+              v-model="position.description"
             ></textarea>
           </td>
         </tr>
