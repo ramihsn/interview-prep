@@ -31,18 +31,18 @@ async def mark_question_as_unanswered(id: int, db=Depends(get_db)) -> None:
 
 
 @router.post('/upload-file')
-async def upload_file(file_type: _INPUT_FILE_TYPES, file: UploadFile = File(...), db=Depends(get_db)):
+async def upload_file(position_id: int, file_type: _INPUT_FILE_TYPES, file: UploadFile = File(...), db=Depends(get_db)):
     logger.info(f'Uploading file of type {file_type}')
     questions: list[schemas.QuestionCreate] = []
     result: list[schemas.QuestionRead] = []
     try:
         match file_type:
             case 'csv':
-                questions = await file_readers.from_csv_file(file.file)
+                questions = await file_readers.from_csv_file(position_id, file.file)
             case 'json':
-                questions = await file_readers.from_json_file(file.file)
+                questions = await file_readers.from_json_file(position_id, file.file)
             case 'excel':
-                questions = await file_readers.from_excel_file(file.file)
+                questions = await file_readers.from_excel_file(position_id, file.file)
             case _:
                 raise HTTPException(status_code=400, detail="File type not supported")
     except ValueError as e:
@@ -50,6 +50,6 @@ async def upload_file(file_type: _INPUT_FILE_TYPES, file: UploadFile = File(...)
 
     for question in questions:
         logger.info(f'Adding question: {question}')
-        result.append(await services.add_question(db, question))
+        result.append(await services.create_question(db, question))
 
     return result

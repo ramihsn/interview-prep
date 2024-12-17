@@ -10,7 +10,7 @@ from app.schemas.questions import QuestionCreate
 _EXPECTED_TITLES = ['topic', 'difficulty', 'question']
 
 
-async def from_csv_file(file: BinaryIO) -> list[QuestionCreate]:
+async def from_csv_file(position_id: int, file: BinaryIO) -> list[QuestionCreate]:
     """
     Reads a CSV file and returns a list of dictionaries, where each dictionary represents a row.
 
@@ -34,12 +34,12 @@ async def from_csv_file(file: BinaryIO) -> list[QuestionCreate]:
     csv_reader = csv.DictReader(StringIO(decoded_content))
 
     # Convert the CSV reader to a list of QuestionCreate objects
-    questions = [QuestionCreate(**row) for row in csv_reader]
+    questions = [QuestionCreate(position_id=position_id, **row) for row in csv_reader]
 
     return questions
 
 
-async def from_json_file(file: BinaryIO) -> list[QuestionCreate]:
+async def from_json_file(position_id: int, file: BinaryIO) -> list[QuestionCreate]:
     """
     Reads a JSON file and returns a list of dictionaries, where each dictionary represents a row.
 
@@ -60,7 +60,7 @@ async def from_json_file(file: BinaryIO) -> list[QuestionCreate]:
         if not all(key in row for key in _EXPECTED_TITLES):
             error_rows.append(row)
         else:
-            questions.append(QuestionCreate(**row))
+            questions.append(QuestionCreate(position_id=position_id, **row))
 
     if error_rows:
         raise ValueError(f'Invalid JSON file format, missing keys: {error_rows}')
@@ -68,7 +68,7 @@ async def from_json_file(file: BinaryIO) -> list[QuestionCreate]:
     return questions
 
 
-async def from_excel_file(file: BinaryIO) -> list[QuestionCreate]:
+async def from_excel_file(position_id: int, file: BinaryIO) -> list[QuestionCreate]:
     """
     Reads an Excel file and returns a list of dictionaries, where each dictionary represents a row.
 
@@ -92,6 +92,6 @@ async def from_excel_file(file: BinaryIO) -> list[QuestionCreate]:
     # Convert the sheet to a list of QuestionCreate objects
     questions = []
     for row in sheet.iter_rows(min_row=2, values_only=True):
-        questions.append(QuestionCreate(topic=row[0], difficulty=row[1], question=row[2]))
+        questions.append(QuestionCreate(position_id=position_id, topic=row[0], difficulty=row[1], question=row[2]))
 
     return questions
