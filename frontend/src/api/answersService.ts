@@ -12,13 +12,13 @@ export const fetchAnswer = async (id: string): Promise<Answer> => {
   return response.data as Answer
 }
 
-export const createAnswer = async (question: AnswerCreate): Promise<Answer> => {
-  const response = await httpClient.post('/v1/answers', question)
+export const createAnswer = async (answer: AnswerCreate): Promise<Answer> => {
+  const response = await httpClient.post('/v1/answers', answer)
   return response.data as Answer
 }
 
-export const updateAnswer = async (id: string, question: AnswerCreate): Promise<Answer> => {
-  const response = await httpClient.put(`/v1/answers/${id}`, question)
+export const updateAnswer = async (id: string, answer: AnswerCreate): Promise<Answer> => {
+  const response = await httpClient.put(`/v1/answers/${id}`, answer)
   return response.data as Answer
 }
 

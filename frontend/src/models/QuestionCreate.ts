@@ -1,5 +1,4 @@
-import type { QuestionCreateType } from '@/types'
-import Answer from '@/models/Answer'
+import type { QuestionCreateType, AnswerType } from '@/types'
 
 export default class QuestionCreate implements QuestionCreateType {
   topic: string
@@ -8,7 +7,7 @@ export default class QuestionCreate implements QuestionCreateType {
   position_id: number
 
   answered?: boolean = false
-  answer: Answer | undefined | null = undefined
+  answer?: AnswerType | null = undefined
 
   constructor(
     topic: string,
@@ -16,7 +15,7 @@ export default class QuestionCreate implements QuestionCreateType {
     question: string,
     position_id: number,
     answered: boolean = false,
-    answer: Answer | undefined | null = undefined,
+    answer?: AnswerType | null,
   ) {
     this.topic = topic
     this.difficulty = difficulty

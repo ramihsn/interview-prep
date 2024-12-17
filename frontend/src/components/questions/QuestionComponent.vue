@@ -9,11 +9,15 @@ import AnswerComponent from '../AnswerComponent.vue'
 import ConfirmDeletion from '../ConfirmDeletion.vue'
 import { createAnswer } from '@/api/answersService'
 import QuestionEditor from './QuestionEditor.vue'
+import AnswerCreate from '@/models/AnswerCreate'
 import Question from '@/models/Question'
 import Answer from '@/models/Answer'
 
 defineEmits(['delete'])
 const props = defineProps<{ question: Question }>()
+const answer = ref<Answer | AnswerCreate>(
+  props.question.answer || new AnswerCreate(props.question.id),
+)
 const markAsDone = ref(false)
 const isLoading = ref(false)
 const editQuestion = ref(false)
@@ -65,7 +69,7 @@ function onSubmitChanges(newQuestion: Question) {
   // update the question values in the list of questions
 }
 
-function onAnswerSubmit(answer: Answer) {
+function onAnswerSubmit(answer: AnswerCreate) {
   if (answer !== props.question.answer) {
     createAnswer(answer)
       .then((data) => {
@@ -86,7 +90,7 @@ function handleSubmit() {
 
 <template>
   <div
-    class="card bg-primary text-primary-content shadow custom relative mb-10 pb-2 no-select"
+    class="card bg-primary text-primary-content shadow custom relative mb-10 pb-2"
     :class="{ done: markAsDone }"
     :id="`question-${question.id}`"
   >
@@ -161,7 +165,7 @@ function handleSubmit() {
         <h2>Answer:</h2>
         <AnswerComponent
           ref="answerComponentRef"
-          :answer="question.answer"
+          :answer="answer"
           :question_id="question.id"
           @submitAnswer="onAnswerSubmit"
         />

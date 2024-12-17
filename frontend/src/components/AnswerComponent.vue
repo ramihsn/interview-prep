@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+
+import AnswerCreate from '@/models/AnswerCreate'
 import Answer from '@/models/Answer'
 
-const props = defineProps<{ answer: Answer | null | undefined }>()
+const props = defineProps<{ answer: Answer | AnswerCreate }>()
 const emit = defineEmits(['submitAnswer'])
 
 const answerText = ref<string>(props.answer?.answer || '')
@@ -25,12 +27,11 @@ function emitAnswer() {
     answer: answerText.value,
     review: reviewText.value,
     rating: rating.value,
-  } as Answer)
+    question_id: props.answer.question_id,
+  } as AnswerCreate)
 }
 
-defineExpose({
-  emitAnswer,
-})
+defineExpose({ emitAnswer })
 </script>
 
 <template>
