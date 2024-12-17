@@ -67,3 +67,12 @@ async def get_answered_questions(db: Session, skip: int = 0, limit: int = 100) -
         q = q.limit(limit)
 
     return [QuestionRead.model_validate(i) for i in db.exec(q).all()]
+
+
+async def delete_questions_by_position(db: Session, position_id: int) -> None:
+    logger.info(f"Deleting all questions for position with ID {position_id}")
+    q = select(QuestionModel).where(QuestionModel.position_id == position_id)  # noqa:E712
+    for question in db.exec(q).all():
+        logger.info(f"Deleting question: {question}")
+        db.delete(question)
+    db.commit()
