@@ -59,3 +59,9 @@ async def upload_file(position_id: int, file_type: _INPUT_FILE_TYPES, file: Uplo
 async def delete_questions_by_position(position_id: int, db=Depends(get_db)):
     logger.info(f'Deleting all questions for position with id {position_id}')
     return await services.delete_questions_by_position(db, position_id)
+
+
+@router.get('/position/{position_id}/count')
+async def get_question_count_by_position(position_id: int, db=Depends(get_db)) -> int:
+    logger.info(f'Getting question count for position with id {position_id}')
+    return await services.get_question_count_by_position(db, position_id)
