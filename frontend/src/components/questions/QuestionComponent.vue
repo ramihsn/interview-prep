@@ -13,12 +13,12 @@ import AnswerCreate from '@/models/AnswerCreate'
 import Question from '@/models/Question'
 import Answer from '@/models/Answer'
 
-defineEmits(['delete'])
+const emit = defineEmits(['delete', 'changeStatus'])
 const props = defineProps<{ question: Question }>()
 const answer = ref<Answer | AnswerCreate>(
   props.question.answer || new AnswerCreate(props.question.id),
 )
-const markAsDone = ref(false)
+const markAsDone = ref(props.question.answered || false)
 const isLoading = ref(false)
 const editQuestion = ref(false)
 const answerComponentRef = useTemplateRef<typeof AnswerComponent>('answerComponentRef')
@@ -53,6 +53,7 @@ async function changeQuestionState(
 ) {
   try {
     await stateChangeFunction(questionId)
+    emit('changeStatus', { questionID: props.question.id, isAnswered: markAsDone.value })
   } catch (err) {
     console.error('Error:', err)
     markAsDone.value = !markAsDone.value

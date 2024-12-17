@@ -11,6 +11,7 @@ import { GroupsEnum } from '@/enums/GroupsEnum'
 import type { QuestionType } from '../../types'
 import DropdownMenu from '../DropdownMenu.vue'
 import { toTitleCase } from '@/helpers/string'
+import Question from '@/models/Question'
 import AddItem from '../AddItem.vue'
 
 interface QuestionsGroup {
@@ -80,6 +81,19 @@ function onFileUploadedError(error: string) {
     hasFileUploadError.value = null
   }, 3000)
 }
+
+function onQuestionStatusChange({
+  questionID,
+  isAnswered,
+}: {
+  questionID: number
+  isAnswered: boolean
+}) {
+  const question = questions.value.find((q) => q.id === questionID)
+  if (question) {
+    question.answered = isAnswered
+  }
+}
 </script>
 
 <template>
@@ -107,12 +121,7 @@ function onFileUploadedError(error: string) {
     <div v-if="loading" class="pt-4 max-w-7xl w-full mx-auto custom-container">
       <QuestionsGroup
         :questions="
-          Array.from({ length: 4 }, (_, i) => ({
-            id: i,
-            topic: '...',
-            difficulty: '...',
-            question: 'Loading...',
-          }))
+          Array.from({ length: 4 }, (_, i) => new Question(i, '...', '...', 'Loading...', -1))
         "
       />
     </div>
@@ -125,6 +134,7 @@ function onFileUploadedError(error: string) {
         :questions="group.questions"
         :groupName="group.groupName"
         @delete="onDelete"
+        @questionStatusChange="onQuestionStatusChange"
       />
     </div>
 

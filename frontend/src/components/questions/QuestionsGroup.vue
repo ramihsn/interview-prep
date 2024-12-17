@@ -1,23 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineAsyncComponent } from 'vue'
 
-defineProps(['questions', 'groupName'])
-defineEmits(['delete'])
+import Question from '@/models/Question'
 
-const Question = defineAsyncComponent(() => import('./QuestionComponent.vue'))
+const props = defineProps({
+  groupName: String,
+  questions: {
+    type: Array as () => Question[],
+    required: true,
+  },
+})
+defineEmits(['delete', 'questionStatusChange'])
+
+const QuestionComponent = defineAsyncComponent(() => import('./QuestionComponent.vue'))
 const showGroup = ref(true)
+const questionsCount = computed(() => props.questions.length)
+const questionsSolvedCount = computed(() => props.questions.filter((q) => q.answered).length)
 </script>
 
 <template>
   <div class="card">
     <div
       v-if="groupName !== undefined"
-      class="card-title no-select"
+      class="card-title no-select flex"
       @click="showGroup = !showGroup"
     >
       <span>{{ groupName }}</span>
-      <span>
+      <span class="grow">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5 ml-2 transform transition-transform duration-200"
@@ -32,17 +42,21 @@ const showGroup = ref(true)
           />
         </svg>
       </span>
+      <span v-if="groupName !== undefined" class="mr-7"
+        >{{ questionsSolvedCount }}/{{ questionsCount }}</span
+      >
     </div>
     <div
       class="transition-all duration-300 ease-in-out overflow-hidden card-body"
       :class="{ collapsed: !showGroup }"
     >
-      <Question
+      <QuestionComponent
         class="mb-4"
         v-for="q in questions"
         :key="q.id"
         :question="q"
         @delete="$emit('delete', q.id)"
+        @changeStatus="(status) => $emit('questionStatusChange', status)"
       />
     </div>
   </div>
