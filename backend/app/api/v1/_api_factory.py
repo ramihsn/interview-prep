@@ -114,11 +114,11 @@ def factory(name: str, logger: Logger, service: Service, schema_module: SchemaMo
         name=f"update_{name}",
     )
     async def update_item(
+        id: int,
         item_update: schema_module.update,  # type: ignore
-        item=Depends(get_item_or_404),
         db=Depends(get_db),
     ):
-        updated_item = await service.update_item(db, item.id, item_update)
+        updated_item = await service.update_item(db, id, item_update)
         return updated_item
 
     # Delete Item

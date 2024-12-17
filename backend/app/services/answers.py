@@ -45,7 +45,7 @@ async def create_answer(db: Session, answer: AnswerCreate) -> AnswerRead:
     return AnswerRead.model_validate(answer_module)
 
 
-async def update_position(db: Session, answer_id: int, answer: AnswerUpdate) -> AnswerRead | None:  # type: ignore
+async def update_answer(db: Session, answer_id: int, answer: AnswerUpdate) -> AnswerRead | None:  # type: ignore
     logger.info(f"Updating answer with ID {answer_id} to {answer}")
     return await helpers.update_item(db, AnswerModel, AnswerRead, answer_id, answer)
 
