@@ -11,6 +11,7 @@ import { GroupsEnum } from '@/enums/GroupsEnum'
 import type { QuestionType } from '../../types'
 import DropdownMenu from '../DropdownMenu.vue'
 import { toTitleCase } from '@/helpers/string'
+import AddItem from '../AddItem.vue'
 
 interface QuestionsGroup {
   idx: number
@@ -183,11 +184,7 @@ function onFileUploadedError(error: string) {
       </div>
     </transition>
 
-    <div class="fixed bottom-4 right-4">
-      <button @click="addNewQuestion = true" class="btn btn-circle btn-primary text-4xl pb-2">
-        +
-      </button>
-    </div>
+    <AddItem @click="addNewQuestion = true" />
   </div>
 </template>
 

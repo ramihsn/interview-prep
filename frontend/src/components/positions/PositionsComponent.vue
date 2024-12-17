@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import Position from '@/models/Position'
 import PositionForm from './PositionForm.vue'
@@ -10,6 +9,7 @@ import { useUserSettingsStore } from '@/stores/userSettings'
 import ModuleComponent from '@/components/ModuleComponent.vue'
 import { countPositionQuestions } from '@/api/questionsService'
 import { fetchPositions, deletePosition as deletePositionFunc } from '@/api/positionService'
+import AddItem from '../AddItem.vue'
 
 const userSettingsStore = useUserSettingsStore()
 
@@ -147,14 +147,7 @@ const getPositionQuestionsCount = async (positionID: number) => {
         />
       </div>
 
-      <div class="fixed bottom-6 right-10 flex space-x-4">
-        <FontAwesomeIcon
-          icon="plus"
-          size="2xl"
-          class="btn btn-circle btn-outline btn-primary p-1"
-          @click="addNewPosition = true"
-        />
-      </div>
+      <AddItem @click="addNewPosition = true" />
     </div>
 
     <!-- There are no positions to show -->
