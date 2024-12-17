@@ -19,7 +19,7 @@ async def get_answer(db: Session, answer_id: int) -> AnswerRead | None:
     return await helpers.get_item(db, AnswerModel, AnswerRead, answer_id)
 
 
-async def answer_question(db: Session, answer: AnswerCreate) -> AnswerRead:
+async def create_answer(db: Session, answer: AnswerCreate) -> AnswerRead:
     logger.info(f"Answering question with ID {answer.question_id}")
     if not (question := db.get(QuestionModel, answer.question_id)):
         logger.error("Question does not exist")
