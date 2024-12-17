@@ -103,7 +103,6 @@ function handleSubmit() {
 <template>
   <div
     class="card bg-primary text-primary-content shadow custom relative mb-10 pb-2"
-    :class="{ done: markAsDone }"
     :id="`question-${question.id}`"
   >
     <Teleport to=".question-module" v-if="editQuestion">
@@ -140,7 +139,7 @@ function handleSubmit() {
       </ModuleComponent>
     </Teleport>
 
-    <div class="absolute bottom-2 right-2 mb-5 mr-3 cursor-pointer">
+    <div v-if="!markAsDone" class="absolute bottom-2 right-2 mb-5 mr-3 cursor-pointer">
       <button class="btn btn-primary pr-5" @click="handleSubmit">Submit</button>
       <FontAwesomeIcon
         size="xl"
@@ -157,11 +156,12 @@ function handleSubmit() {
     </div>
 
     <div class="card-body">
-      <h2 class="card-title">
-        <strong>
+      <h2 class="card-title flex">
+        <strong class="grow" :class="{ done: markAsDone }">
           <span>Topic: </span>
           <span>{{ question.topic }}</span>
         </strong>
+        <div v-if="markAsDone">{{ answer.rating }} / 10</div>
       </h2>
       <div :hidden="markAsDone" class="mt-3">
         <p class="pb-3">
