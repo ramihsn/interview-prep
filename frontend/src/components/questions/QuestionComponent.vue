@@ -3,9 +3,11 @@ import { ref, useTemplateRef } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import { markQuestionAsAnswered, markQuestionAsUnanswered } from '@/api/questionsService'
-import { createAnswer } from '@/api/answersService'
+import { deleteQuestion } from '@/api/questionsService'
 import ModuleComponent from '../ModuleComponent.vue'
 import AnswerComponent from '../AnswerComponent.vue'
+import ConfirmDeletion from '../ConfirmDeletion.vue'
+import { createAnswer } from '@/api/answersService'
 import QuestionEditor from './QuestionEditor.vue'
 import Question from '@/models/Question'
 import Answer from '@/models/Answer'
@@ -16,6 +18,7 @@ const markAsDone = ref(false)
 const isLoading = ref(false)
 const editQuestion = ref(false)
 const answerComponentRef = useTemplateRef<typeof AnswerComponent>('answerComponentRef')
+const confirmDelete = ref(false)
 
 /**
  * Toggles the mark as done state for a question.
@@ -97,6 +100,30 @@ function handleSubmit() {
       </ModuleComponent>
     </Teleport>
 
+    <Teleport to=".question-module" v-if="confirmDelete">
+      <ModuleComponent @close="confirmDelete = false">
+        <div class="flex items-center justify-center">
+          <ConfirmDeletion
+            :itemID="question.id"
+            :deleteFunction="deleteQuestion"
+            @close="confirmDelete = false"
+            @confirm="$emit('delete', question.id)"
+          >
+            <span>Are you sure you want to delete the question?</span>
+            <div>
+              <strong class="text-primary">{{ question.topic }}</strong>
+              with difficulty level
+              <strong class="text-primary">{{ question.difficulty }}</strong>
+            </div>
+            <br class="my-1" />
+            <div>
+              {{ question.question }}
+            </div>
+          </ConfirmDeletion>
+        </div>
+      </ModuleComponent>
+    </Teleport>
+
     <div class="absolute bottom-2 right-2 mb-5 mr-3 cursor-pointer">
       <button class="btn btn-primary pr-5" @click="handleSubmit">Submit</button>
       <FontAwesomeIcon
@@ -109,7 +136,7 @@ function handleSubmit() {
         size="xl"
         icon="trash-can"
         class="mr-3 hover:text-red-500"
-        @click="$emit('delete', question.id)"
+        @click="confirmDelete = true"
       />
     </div>
 

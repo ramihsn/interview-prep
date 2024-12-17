@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue'
 
-import { fetchQuestions, deleteQuestion } from '@/api/questionsService'
 import { useUserSettingsStore } from '@/stores/userSettings'
+import { fetchQuestions } from '@/api/questionsService'
 import { fetchPosition } from '@/api/positionService'
 import ModuleComponent from '../ModuleComponent.vue'
 import QuestionsAdder from './QuestionsAdder.vue'
@@ -70,9 +70,7 @@ function onQuestionsAdded(newQuestions: QuestionType[]) {
 }
 
 function onDelete(questionId: number) {
-  deleteQuestion(questionId).then(() => {
-    questions.value = questions.value.filter((q) => q.id !== questionId)
-  })
+  questions.value = questions.value.filter((q) => q.id !== questionId)
 }
 
 function onFileUploadedError(error: string) {
