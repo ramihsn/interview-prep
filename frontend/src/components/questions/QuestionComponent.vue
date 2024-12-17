@@ -70,22 +70,24 @@ function onSubmitChanges(newQuestion: Question) {
   // update the question values in the list of questions
 }
 
-function onAnswerSubmit(answer: Answer | AnswerCreate) {
-  if (answer !== props.question.answer) {
+function onAnswerSubmit(newAnswer: Answer | AnswerCreate) {
+  if (newAnswer !== props.question.answer) {
     if (props.question.answer) {
       console.log('Previous Answer:', props.question.answer)
       console.log('New Answer:', answer)
-      updateAnswer(props.question.answer.id, answer)
+      updateAnswer(props.question.answer.id, newAnswer)
         .then((data) => {
           console.log('Success:', data)
+          answer.value.rating = data.rating
         })
         .catch((err) => {
           console.error('Error:', err)
         })
     } else {
-      createAnswer(answer)
+      createAnswer(newAnswer)
         .then((data) => {
           console.log('Success:', data)
+          answer.value.rating = data.rating
         })
         .catch((err) => {
           console.error('Error:', err)
