@@ -2,8 +2,11 @@ export interface QuestionCreateType {
   topic: string
   difficulty: string
   question: string
+  answered?: boolean
 
-  answer?: AnswerType
+  position_id: number
+
+  answer?: AnswerType | null
 }
 export interface QuestionType extends QuestionCreateType {
   id: number
@@ -14,7 +17,7 @@ export interface AnswerCreateType {
   review: string
   rating: number
 
-  question_id?: number
+  question_id: number
   question?: QuestionType
 }
 

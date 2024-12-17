@@ -2,34 +2,23 @@
 import { ref } from 'vue'
 
 import FileUploader from '../FileUploader.vue'
-import type { QuestionType } from '../../types'
+import { createQuestion } from '@/api/questionsService'
+import QuestionCreate from '@/models/QuestionCreate'
 
 const emit = defineEmits(['questionAdded', 'fileUploaded', 'fileUploadedError'])
-defineProps({ embedded: { type: Boolean, default: true } })
-const baseURL = import.meta.env.VITE_BASE_URL
+const props = defineProps({
+  positionID: { type: Number, required: true },
+  embedded: { type: Boolean, default: true },
+})
 const topic = ref('')
 const difficulty = ref('')
 const question = ref('')
 
 const addQuestion = async () => {
-  const headers = { 'Content-Type': 'application/json' }
-  const requestParams = {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      topic: topic.value,
-      difficulty: difficulty.value,
-      question: question.value,
-    }),
-  }
-
-  const res = await fetch(`${baseURL}/api/v1/questions`, requestParams)
-  if (!res.ok) {
-    throw new Error('Network response was not ok')
-  }
-
-  const questionCreated: QuestionType = await res.json()
-  emit('questionAdded', questionCreated)
+  const q = new QuestionCreate(topic.value, difficulty.value, question.value, props.positionID)
+  createQuestion(q).then((questionCreated) => {
+    emit('questionAdded', questionCreated)
+  })
 }
 </script>
 
@@ -103,6 +92,7 @@ const addQuestion = async () => {
       type="json"
       icon="file-code"
       color="#9a7bab"
+      :positionID="positionID"
       @fileUploaded="(data) => $emit('fileUploaded', data)"
       @fileUploadError="(error) => $emit('fileUploadedError', error)"
     />
@@ -111,6 +101,7 @@ const addQuestion = async () => {
       type="csv"
       icon="file-csv"
       color="#4bb25d"
+      :positionID="positionID"
       @fileUploaded="(data) => $emit('fileUploaded', data)"
       @fileUploadError="(error) => $emit('fileUploadedError', error)"
     />
@@ -119,6 +110,7 @@ const addQuestion = async () => {
       type="excel"
       icon="file-excel"
       color="#097640"
+      :positionID="positionID"
       @fileUploaded="(data) => $emit('fileUploaded', data)"
       @fileUploadError="(error) => $emit('fileUploadedError', error)"
     />

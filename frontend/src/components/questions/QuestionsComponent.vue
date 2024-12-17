@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed } from 'vue'
 
+import { fetchQuestions, deleteQuestion } from '@/api/questionsService'
 import { useUserSettingsStore } from '@/stores/userSettings'
 import { fetchPosition } from '@/api/positionService'
 import ModuleComponent from '../ModuleComponent.vue'
@@ -18,14 +19,16 @@ interface QuestionsGroup {
 }
 
 const userSettingsStore = useUserSettingsStore()
-const baseURL = import.meta.env.VITE_BASE_URL
 const addNewQuestion = ref(false)
 const loading = ref<boolean>(true)
 const hasFileUploadError = ref<string | null>(null)
 const questions = ref<QuestionType[]>([])
 
 onMounted(async () => {
-  await fetchQuestions()
+  questions.value = await fetchQuestions()
+  loading.value = false
+
+  // get the position company and title if it's not already set
   if (userSettingsStore.selectedPosition === null) {
     console.log(`Fetching position at index ${userSettingsStore.positionIndex}`)
     fetchPosition(userSettingsStore.positionIndex ?? 0).then((fetchedPos) => {
@@ -56,17 +59,6 @@ const groupedQuestions = computed<QuestionsGroup[]>(() => {
   return grouped
 })
 
-async function fetchQuestions() {
-  const res = await fetch(`${baseURL}/api/v1/questions`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-  questions.value = await res.json()
-  loading.value = false
-}
-
 function onQuestionAdded(newQuestion: QuestionType) {
   questions.value.push(newQuestion)
   addNewQuestion.value = false
@@ -77,17 +69,10 @@ function onQuestionsAdded(newQuestions: QuestionType[]) {
   addNewQuestion.value = false
 }
 
-async function onDelete(questionId: number) {
-  const res = await fetch(`${baseURL}/api/v1/questions/${questionId}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (res.ok) {
+function onDelete(questionId: number) {
+  deleteQuestion(questionId).then(() => {
     questions.value = questions.value.filter((q) => q.id !== questionId)
-  }
+  })
 }
 
 function onFileUploadedError(error: string) {
@@ -109,6 +94,7 @@ function onFileUploadedError(error: string) {
     <Teleport to=".question-module" v-if="addNewQuestion">
       <ModuleComponent @close="addNewQuestion = false">
         <QuestionsAdder
+          :positionID="userSettingsStore.positionIndex ?? -1"
           @questionAdded="onQuestionAdded"
           @fileUploaded="onQuestionsAdded"
           @fileUploadedError="onFileUploadedError"
@@ -173,6 +159,7 @@ function onFileUploadedError(error: string) {
       <!-- Questions Adder Component -->
       <div class="w-full max-w-2xl">
         <QuestionsAdder
+          :positionID="userSettingsStore.positionIndex ?? -1"
           @questionAdded="onQuestionAdded"
           @fileUploaded="onQuestionsAdded"
           @fileUploadedError="onFileUploadedError"
@@ -211,7 +198,7 @@ function onFileUploadedError(error: string) {
   padding-left: 10%;
   padding-right: 10%;
 
-  height: 93vh;
+  height: 92vh;
   overflow-y: auto;
 
   scrollbar-width: none;

@@ -2,8 +2,9 @@
 import { ref, useTemplateRef, computed } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-const baseURL = import.meta.env.VITE_BASE_URL
-const props = defineProps(['type', 'icon', 'color'])
+import { uploadFile } from '@/api/questionsService'
+
+const props = defineProps(['positionID', 'type', 'icon', 'color'])
 const emit = defineEmits(['fileUploaded', 'fileUploadError'])
 const accept = computed(() => {
   switch (props.type) {
@@ -27,29 +28,10 @@ function onFileChanged($event: Event) {
     file.value = target.files[0]
 
     if (file.value) {
-      const formData = new FormData()
-      formData.append('file', file.value)
-      formData.append('file_type', props.type)
-
       // Show loading spinner
       isLoading.value = true
 
-      fetch(`${baseURL}/api/v1/questions/upload-file?file_type=${props.type}`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-        },
-        body: formData,
-      })
-        .then((res) => {
-          if (!res.ok) {
-            res.json().then((data) => {
-              emit('fileUploadError', data.detail)
-            })
-            throw new Error('Network response was not ok')
-          }
-          return res.json()
-        })
+      uploadFile(props.positionID, file.value, props.type)
         .then((data) => {
           emit('fileUploaded', data)
         })

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import type { AnswerType } from '@/types'
+import Answer from '@/models/Answer'
 
-const props = defineProps<{ answer: AnswerType | undefined }>()
+const props = defineProps<{ answer: Answer | null | undefined }>()
 const emit = defineEmits(['submitAnswer'])
 
 const answerText = ref<string>(props.answer?.answer || '')
@@ -25,7 +25,7 @@ function emitAnswer() {
     answer: answerText.value,
     review: reviewText.value,
     rating: rating.value,
-  } as AnswerType)
+  } as Answer)
 }
 
 defineExpose({

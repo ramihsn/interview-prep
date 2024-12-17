@@ -1,15 +1,11 @@
 import type { PositionType } from '@/types'
+import PositionCreate from './PositionCreate'
 
-export default class Position implements PositionType {
+export default class Position extends PositionCreate implements PositionType {
   id: number
-  company: string
-  title: string
-  description: string
 
-  constructor(id: number, company: string, title: string, description: string) {
-    this.id = id
-    this.company = company
-    this.title = title
-    this.description = description
+  constructor(data: PositionType) {
+    super(data)
+    this.id = data.id
   }
 }

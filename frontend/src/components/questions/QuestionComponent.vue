@@ -2,44 +2,59 @@
 import { ref, useTemplateRef } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import { markQuestionAsAnswered, markQuestionAsUnanswered } from '@/api/questionsService'
+import { createAnswer } from '@/api/answersService'
 import ModuleComponent from '../ModuleComponent.vue'
-import QuestionEditor from './QuestionEditor.vue'
 import AnswerComponent from '../AnswerComponent.vue'
-import type { AnswerType, QuestionType } from '../../types'
+import QuestionEditor from './QuestionEditor.vue'
+import Question from '@/models/Question'
+import Answer from '@/models/Answer'
 
 defineEmits(['delete'])
-const props = defineProps<{ question: QuestionType }>()
-const baseURL = import.meta.env.VITE_BASE_URL
+const props = defineProps<{ question: Question }>()
 const markAsDone = ref(false)
 const isLoading = ref(false)
 const editQuestion = ref(false)
 const answerComponentRef = useTemplateRef<typeof AnswerComponent>('answerComponentRef')
 
+/**
+ * Toggles the mark as done state for a question.
+ * Sets the loading state to true before making an API call to change the question state.
+ *
+ * @function toggleMarkAsDone
+ */
 function toggleMarkAsDone() {
   isLoading.value = true // Set loading to true before API call
-  const newState = markAsDone.value ? 'mark-as-unanswered' : 'mark-as-answered'
+  const func = markAsDone.value ? markQuestionAsUnanswered : markQuestionAsAnswered
 
-  changeQuestionState(props.question.id, newState)
+  changeQuestionState(props.question.id, func)
 }
 
-async function changeQuestionState(questionId: number, newState: string) {
-  const headers = { 'Content-Type': 'application/json' }
-  const requestParams = { method: 'POST', headers }
-
+/**
+ * Changes the state of a question by calling the provided callback function.
+ *
+ * @async
+ * @function changeQuestionState
+ * @param {number} questionId - The ID of the question to change the state for.
+ * @param {function} stateChangeFunction - The callback function to call for changing the question state.
+ * @returns {Promise<void>}
+ * @throws Will log an error message if the callback function throws an error.
+ */
+async function changeQuestionState(
+  questionId: number,
+  stateChangeFunction: (questionId: number) => Promise<void>,
+) {
   try {
-    const res = await fetch(`${baseURL}/api/v1/questions/${questionId}/${newState}`, requestParams)
-    if (!res.ok) {
-      throw new Error('Network response was not ok')
-    }
+    await stateChangeFunction(questionId)
   } catch (err) {
-    console.error('FU', err)
+    console.error('Error:', err)
     markAsDone.value = !markAsDone.value
   } finally {
     isLoading.value = false // Reset loading after API call
   }
 }
 
-function onSubmitChanges(newQuestion: QuestionType) {
+function onSubmitChanges(newQuestion: Question) {
   editQuestion.value = false
   console.log('New Question:', newQuestion)
   // TODO: see what to do next with the new question
@@ -47,21 +62,9 @@ function onSubmitChanges(newQuestion: QuestionType) {
   // update the question values in the list of questions
 }
 
-function onAnswerSubmit(answer: AnswerType) {
+function onAnswerSubmit(answer: Answer) {
   if (answer !== props.question.answer) {
-    const headers = { 'Content-Type': 'application/json' }
-    const requestParams = {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ ...answer, question_id: props.question.id }),
-    }
-    fetch(`${baseURL}/api/v1/answers`, requestParams)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error('Network response was not ok')
-        }
-        return res.json()
-      })
+    createAnswer(answer)
       .then((data) => {
         console.log('Success:', data)
       })
