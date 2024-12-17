@@ -1,22 +1,16 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
-import { deletePosition } from '@/api/positionService'
+import type { PropType } from 'vue'
 
-// Props
+const emit = defineEmits(['confirm', 'close'])
 const props = defineProps({
-  positionId: Number || undefined,
-  companyName: String,
-  positionTitle: String,
+  itemID: Number,
+  deleteFunction: Function as PropType<(itemID: number) => Promise<void>>,
 })
 
-const relatedQuestionsCount = 5 // TODO: Fetch related questions count
-
-// Emits
-const emit = defineEmits(['confirm', 'close'])
-
 function onConfirmDelete() {
-  if (props.positionId) {
-    deletePosition(props.positionId)
+  if (props.itemID) {
+    const deleteFunction = props.deleteFunction as (itemID: number) => Promise<void>
+    deleteFunction(props.itemID)
       .then(() => {
         emit('confirm')
       })
@@ -37,14 +31,7 @@ function onConfirmDelete() {
 
     <!-- Modal Body -->
     <p class="py-4">
-      Are you sure you want to delete the position
-      <strong class="text-primary">{{ positionTitle }}</strong>
-      at
-      <strong class="text-primary">{{ companyName }}</strong>
-      ?
-      <br />
-      This action will also delete <strong>{{ relatedQuestionsCount }}</strong> related question(s).
-      This action cannot be undone.
+      <slot />
     </p>
 
     <!-- Modal Actions -->

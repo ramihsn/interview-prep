@@ -55,3 +55,8 @@ export const uploadFile = async (
   })
   return response.data as string
 }
+
+export const countPositionQuestions = async (positionID: number): Promise<number> => {
+  const response = await httpClient.get(`/v1/questions/position/${positionID}/count`)
+  return response.data as number
+}

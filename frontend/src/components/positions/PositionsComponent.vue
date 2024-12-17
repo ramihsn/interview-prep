@@ -4,11 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import Position from '@/models/Position'
 import PositionForm from './PositionForm.vue'
-import PositionDelete from './PositionDelete.vue'
-import { fetchPositions } from '@/api/positionService'
+import ConfirmDeletion from '../ConfirmDeletion.vue'
 import PositionComponent from './PositionComponent.vue'
 import { useUserSettingsStore } from '@/stores/userSettings'
 import ModuleComponent from '@/components/ModuleComponent.vue'
+import { countPositionQuestions } from '@/api/questionsService'
+import { fetchPositions, deletePosition as deletePositionFunc } from '@/api/positionService'
 
 const userSettingsStore = useUserSettingsStore()
 
@@ -18,6 +19,7 @@ const addNewPosition = ref(false)
 const deletePosition = ref(false)
 const selectedPosition = ref<Position | null>(null)
 const toBeDeletedPosition = ref<Position | null>(null)
+const toBeDeletedPositionQuestionsCount = ref(0)
 
 // Lifecycle Hooks
 onMounted(() => {
@@ -51,6 +53,9 @@ const onDeletePosition = (position: Position) => {
   console.log('Deleting position', position)
   deletePosition.value = true
   toBeDeletedPosition.value = position
+  getPositionQuestionsCount(position.id).then((count) => {
+    toBeDeletedPositionQuestionsCount.value = count
+  })
 }
 
 const onPositionDeleted = () => {
@@ -86,6 +91,10 @@ const onSelectPosition = (position: Position, options: { reset?: boolean } = { r
     userSettingsStore.selectedPosition = position
   }
 }
+
+const getPositionQuestionsCount = async (positionID: number) => {
+  return await countPositionQuestions(positionID)
+}
 </script>
 
 <template>
@@ -104,14 +113,22 @@ const onSelectPosition = (position: Position, options: { reset?: boolean } = { r
     <Teleport to=".question-module" v-if="deletePosition">
       <ModuleComponent @close="deletePosition = false">
         <div class="flex items-center justify-center">
-          <PositionDelete
-            class="w-full"
-            :positionId="toBeDeletedPosition?.id ?? undefined"
-            :companyName="toBeDeletedPosition?.company ?? 'koko'"
-            :positionTitle="toBeDeletedPosition?.title ?? 'fofo'"
+          <ConfirmDeletion
+            :itemID="toBeDeletedPosition?.id"
+            :deleteFunction="deletePositionFunc"
             @close="deletePosition = false"
             @confirm="onPositionDeleted"
-          />
+          >
+            Are you sure you want to delete the position
+            <strong class="text-primary">{{ toBeDeletedPosition?.title }}</strong>
+            at
+            <strong class="text-primary">{{ toBeDeletedPosition?.company }}</strong>
+            ?
+            <br />
+            This action will also delete
+            <strong>{{ toBeDeletedPositionQuestionsCount }}</strong> related question(s). This
+            action cannot be undone.
+          </ConfirmDeletion>
         </div>
       </ModuleComponent>
     </Teleport>
