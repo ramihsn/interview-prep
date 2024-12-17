@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import MarkdownIt from 'markdown-it'
 
 import AnswerCreate from '@/models/AnswerCreate'
@@ -15,10 +15,12 @@ const md = new MarkdownIt({
   typographer: true,
 })
 
-const answerText = ref<string>(md.render(props.answer?.answer) || '')
-const editAnswer = ref(false)
-const reviewText = ref<string>(md.render(props.answer?.review) || '')
-const editReview = ref(false)
+const answerText = ref<string>(props.answer?.answer || '')
+const renderedAnswer = computed(() => md.render(answerText.value))
+const editAnswer = ref(!props.answer.answer)
+const reviewText = ref<string>(props.answer?.review || '')
+const renderedReview = computed(() => md.render(reviewText.value))
+const editReview = ref(!props.answer.review)
 const rating = ref<number | null>(props.answer?.rating ?? null)
 const ratingError = ref(false)
 
@@ -39,6 +41,9 @@ function emitAnswer() {
     rating: rating.value,
     question_id: props.answer.question_id,
   } as AnswerCreate)
+
+  editAnswer.value = false
+  editReview.value = false
 }
 
 defineExpose({ emitAnswer })
@@ -49,7 +54,7 @@ defineExpose({ emitAnswer })
     <!-- Textarea for answer input -->
     <div
       v-if="answerText && !editAnswer"
-      v-html="answerText"
+      v-html="renderedAnswer"
       class="prose"
       @dblclick="editAnswer = true"
     ></div>
@@ -68,7 +73,7 @@ defineExpose({ emitAnswer })
         <div class="font-bold text-lg">Review:</div>
         <div
           v-if="reviewText && !editReview"
-          v-html="reviewText"
+          v-html="renderedReview"
           class="prose"
           @dblclick="editReview = true"
         ></div>

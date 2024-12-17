@@ -3,11 +3,11 @@ import { ref, useTemplateRef } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import { markQuestionAsAnswered, markQuestionAsUnanswered } from '@/api/questionsService'
+import { createAnswer, updateAnswer } from '@/api/answersService'
 import { deleteQuestion } from '@/api/questionsService'
 import ModuleComponent from '../ModuleComponent.vue'
 import AnswerComponent from '../AnswerComponent.vue'
 import ConfirmDeletion from '../ConfirmDeletion.vue'
-import { createAnswer } from '@/api/answersService'
 import QuestionEditor from './QuestionEditor.vue'
 import AnswerCreate from '@/models/AnswerCreate'
 import Question from '@/models/Question'
@@ -69,15 +69,27 @@ function onSubmitChanges(newQuestion: Question) {
   // update the question values in the list of questions
 }
 
-function onAnswerSubmit(answer: AnswerCreate) {
+function onAnswerSubmit(answer: Answer | AnswerCreate) {
   if (answer !== props.question.answer) {
-    createAnswer(answer)
-      .then((data) => {
-        console.log('Success:', data)
-      })
-      .catch((err) => {
-        console.error('Error:', err)
-      })
+    if (props.question.answer) {
+      console.log('Previous Answer:', props.question.answer)
+      console.log('New Answer:', answer)
+      updateAnswer(props.question.answer.id, answer)
+        .then((data) => {
+          console.log('Success:', data)
+        })
+        .catch((err) => {
+          console.error('Error:', err)
+        })
+    } else {
+      createAnswer(answer)
+        .then((data) => {
+          console.log('Success:', data)
+        })
+        .catch((err) => {
+          console.error('Error:', err)
+        })
+    }
   }
 }
 

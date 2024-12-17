@@ -7,7 +7,7 @@ export const fetchAnswers = async (): Promise<Answer[]> => {
   return response.data as Answer[]
 }
 
-export const fetchAnswer = async (id: string): Promise<Answer> => {
+export const fetchAnswer = async (id: number): Promise<Answer> => {
   const response = await httpClient.get(`/v1/answers/${id}`)
   return response.data as Answer
 }
@@ -17,7 +17,7 @@ export const createAnswer = async (answer: AnswerCreate): Promise<Answer> => {
   return response.data as Answer
 }
 
-export const updateAnswer = async (id: string, answer: AnswerCreate): Promise<Answer> => {
+export const updateAnswer = async (id: number, answer: AnswerCreate): Promise<Answer> => {
   const response = await httpClient.put(`/v1/answers/${id}`, answer)
   return response.data as Answer
 }
