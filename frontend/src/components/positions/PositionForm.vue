@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import { createPosition } from '@/api/positionService'
@@ -11,6 +11,7 @@ defineProps({ inModule: { type: Boolean, required: false, default: false } })
 
 // Variables
 const position = ref<PositionCreate>(new PositionCreate())
+const companyInput = ref<HTMLInputElement | null>(null)
 const hasError = ref(false)
 
 // Functions
@@ -29,6 +30,10 @@ function addPosition() {
     // TODO: maybe we should show the error to the user
   })
 }
+
+onMounted(() => {
+  companyInput.value?.focus()
+})
 </script>
 
 <template>
@@ -45,6 +50,7 @@ function addPosition() {
           </th>
           <td>
             <input
+              ref="companyInput"
               class="input input-bordered input-primary w-full"
               :class="{ 'border-2 border-rose-500': hasError && !position.company }"
               type="text"

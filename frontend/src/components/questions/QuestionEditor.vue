@@ -1,13 +1,17 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { QuestionType } from '../../types'
 
 const props = defineProps<{ question: QuestionType }>()
 const emit = defineEmits(['close', 'submit'])
+
+// Variables
+const topicInput = ref<HTMLInputElement | null>(null)
 const topic = ref<string>(props.question.topic)
 const difficulty = ref<string>(props.question.difficulty)
 const question = ref<string>(props.question.question)
 
+// Functions
 function onSubmit() {
   if (!question.value) return
   if (
@@ -24,6 +28,10 @@ function onSubmit() {
     question: question.value,
   })
 }
+
+onMounted(() => {
+  topicInput.value?.focus()
+})
 </script>
 <template>
   <div class="card shadow-lg w-full max-w-lg mx-auto bg-base-300 p-6">
@@ -36,6 +44,7 @@ function onSubmit() {
           <span class="label-text font-bold">Topic</span>
         </label>
         <input
+          ref="topicInput"
           type="text"
           v-model="topic"
           class="input input-bordered w-full"

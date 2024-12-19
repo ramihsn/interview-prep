@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import FileUploader from '../FileUploader.vue'
 import { createQuestion } from '@/api/questionsService'
@@ -13,6 +13,7 @@ const props = defineProps({
 const topic = ref('')
 const difficulty = ref('')
 const question = ref('')
+const topicInput = ref<HTMLInputElement | null>(null)
 
 const addQuestion = async () => {
   const q = new QuestionCreate(topic.value, difficulty.value, question.value, props.positionID)
@@ -20,6 +21,10 @@ const addQuestion = async () => {
     emit('questionAdded', questionCreated)
   })
 }
+
+onMounted(() => {
+  topicInput.value?.focus()
+})
 </script>
 
 <template>
@@ -36,6 +41,7 @@ const addQuestion = async () => {
             </th>
             <td class="w-full">
               <input
+                ref="topicInput"
                 type="text"
                 class="input input-bordered input-primary w-full"
                 v-model="topic"
