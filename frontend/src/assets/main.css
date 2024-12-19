@@ -1,3 +1,7 @@
 .no-select {
   user-select: none; /* Disable text selection */
 }
+
+body {
+  margin: 0 !important;
+}

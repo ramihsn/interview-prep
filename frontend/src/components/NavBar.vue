@@ -12,7 +12,7 @@ const isDark = computed(() => userSettingsStore.isDarkTheme)
 </script>
 
 <template>
-  <nav class="navbar bg-gray-500">
+  <nav class="navbar bg-gray-500 h-[8vh]">
     <div class="navbar-start ml-4">
       <div class="flex items-center space-x-3">
         <img src="/icon.svg" alt="Nvidia Logo" class="w-10 h-10" />

@@ -16,7 +16,7 @@ function selectOption(option: GroupsEnum) {
 </script>
 
 <template>
-  <div class="relative inline-block ml-4 mt-3 no-select">
+  <div class="inline-block ml-4 mt-3 no-select">
     <!-- Dropdown Trigger -->
     <button
       @click="isDropdownOpen = !isDropdownOpen"

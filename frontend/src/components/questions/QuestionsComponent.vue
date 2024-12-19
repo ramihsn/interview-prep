@@ -102,12 +102,8 @@ function onQuestionStatusChange({
 </script>
 
 <template>
-  <div class="custom-container relative">
-    <div class="w-full text-center text-accent py-4">
-      <span class="px-2">{{ toTitleCase(userSettingsStore.selectedPosition?.company || '') }}</span>
-      <span class="px-2">|</span>
-      <span class="px-2">{{ toTitleCase(userSettingsStore.selectedPosition?.title || '') }}</span>
-    </div>
+  <div class="custom-container">
+    <DropdownMenu class="fixed top-13 left-0 flex space-x-4" />
 
     <Teleport to=".question-module" v-if="addNewQuestion">
       <ModuleComponent @close="addNewQuestion = false">
@@ -120,7 +116,11 @@ function onQuestionStatusChange({
       </ModuleComponent>
     </Teleport>
 
-    <DropdownMenu class="dropdown-top-left" />
+    <div class="w-full text-center text-accent py-4">
+      <span class="px-2">{{ toTitleCase(userSettingsStore.selectedPosition?.company || '') }}</span>
+      <span class="px-2">|</span>
+      <span class="px-2">{{ toTitleCase(userSettingsStore.selectedPosition?.title || '') }}</span>
+    </div>
 
     <!-- Loading the questions from the backend, show demy questions -->
     <div v-if="loading" class="pt-4 max-w-7xl w-full mx-auto custom-container">
@@ -208,20 +208,11 @@ function onQuestionStatusChange({
   padding-left: 10%;
   padding-right: 10%;
 
-  height: 92vh;
   overflow-y: auto;
-
-  scrollbar-width: none;
-  position: relative; /* Ensure the parent is positioned relatively */
+  position: relative;
 }
 
 .loading-question {
   width: 100%;
-}
-
-.dropdown-top-left {
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 </style>

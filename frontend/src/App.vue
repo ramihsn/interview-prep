@@ -14,8 +14,8 @@ onBeforeMount(() => {
 
 <template>
   <main :data-theme="userSettingsStore.theme" class="flex flex-col h-screen">
-    <NavBar class="h-[8vh]" />
-    <div class="h-[93vh] overflow-auto">
+    <NavBar />
+    <div class="flex-1 overflow-auto">
       <RouterView />
     </div>
   </main>
