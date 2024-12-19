@@ -1,16 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import MarkdownIt from 'markdown-it'
 
+import md from '@/utils/markdown'
 import { fetchPosition } from '@/api/positionService'
 import { useUserSettingsStore } from '@/stores/userSettings'
 
 const userSettingsStore = useUserSettingsStore()
-const md = MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-})
 
 const position = ref(
   userSettingsStore.selectedPosition ?? {

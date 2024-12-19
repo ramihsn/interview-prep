@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import MarkdownIt from 'markdown-it'
 import { computed } from 'vue'
 
 import { toTitleCase } from '@/helpers/string'
 import Position from '@/models/Position'
+import md from '@/utils/markdown'
 
 const props = defineProps<{
   position: Position
@@ -12,12 +12,6 @@ const props = defineProps<{
 }>()
 defineEmits(['deletePosition', 'selectPosition'])
 
-// Markdown Rendering
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-})
 const renderedMarkdown = md.render(props.position.description)
 const positionDesorption = computed(() => {
   if (renderedMarkdown.length <= 250) {

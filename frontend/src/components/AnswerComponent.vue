@@ -1,19 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import MarkdownIt from 'markdown-it'
 
 import AnswerCreate from '@/models/AnswerCreate'
 import Answer from '@/models/Answer'
+import md from '@/utils/markdown'
 
 const props = defineProps<{ answer: Answer | AnswerCreate }>()
 const emit = defineEmits(['submitAnswer'])
-
-// Markdown Rendering
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-})
 
 const answerText = ref<string>(props.answer?.answer || '')
 const renderedAnswer = computed(() => md.render(answerText.value))
@@ -50,12 +43,12 @@ defineExpose({ emitAnswer })
 </script>
 
 <template>
-  <div class="p-4 space-y-4">
+  <div class="p-4 space-y-4 w-full">
     <!-- Textarea for answer input -->
     <div
       v-if="answerText && !editAnswer"
       v-html="renderedAnswer"
-      class="prose"
+      class="prose w-full max-w-none"
       @dblclick="editAnswer = true"
     ></div>
     <textarea
@@ -74,7 +67,7 @@ defineExpose({ emitAnswer })
         <div
           v-if="reviewText && !editReview"
           v-html="renderedReview"
-          class="prose"
+          class="prose w-full max-w-none"
           @dblclick="editReview = true"
         ></div>
         <textarea
