@@ -2,8 +2,8 @@ import httpClient from './httpClient'
 import Question from '@/models/Question'
 import QuestionCreate from '@/models/QuestionCreate'
 
-export const fetchQuestions = async (): Promise<Question[]> => {
-  const response = await httpClient.get('/v1/questions')
+export const fetchQuestions = async (positionID: number): Promise<Question[]> => {
+  const response = await httpClient.get(`v1/questions/position/${positionID}`)
   return response.data as Question[]
 }
 

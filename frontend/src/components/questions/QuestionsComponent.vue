@@ -27,7 +27,12 @@ const hasFileUploadError = ref<string | null>(null)
 const questions = ref<QuestionType[]>([])
 
 onMounted(async () => {
-  questions.value = await fetchQuestions()
+  if (userSettingsStore.positionIndex === null) {
+    console.error('Position index is not set')
+    return
+  }
+
+  questions.value = await fetchQuestions(userSettingsStore.positionIndex)
   loading.value = false
 
   // get the position company and title if it's not already set
