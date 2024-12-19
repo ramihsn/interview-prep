@@ -62,12 +62,12 @@ const onPositionDeleted = () => {
   positions.value = positions.value.filter((pos) => pos !== toBeDeletedPosition.value)
   if (selectedPosition.value === toBeDeletedPosition.value && toBeDeletedPosition.value) {
     onSelectPosition(toBeDeletedPosition.value, { reset: true })
-    deletePosition.value = false
   }
 
   if (positions.value.length === 0) {
     userSettingsStore.setPositionIndex(null)
   }
+  deletePosition.value = false
 }
 
 const onSelectPosition = (position: Position, options: { reset?: boolean } = { reset: false }) => {
