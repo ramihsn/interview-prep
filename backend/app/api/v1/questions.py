@@ -61,7 +61,13 @@ async def delete_questions_by_position(position_id: int, db=Depends(get_db)):
     return await services.delete_questions_by_position(db, position_id)
 
 
-@router.get('/position/{position_id}/count')
-async def get_question_count_by_position(position_id: int, db=Depends(get_db)) -> int:
+@router.get('/position/{position_id}', response_model=list[schemas.QuestionRead])
+async def get_questions_by_position(position_id: int, db=Depends(get_db)) -> int:
+    logger.info(f'Getting questions for position with id {position_id}')
+    return await services.get_questions_by_position(db, position_id)
+
+
+@router.get('/position/{position_id}/count', response_model=int)
+async def get_questions_count_by_position(position_id: int, db=Depends(get_db)) -> int:
     logger.info(f'Getting question count for position with id {position_id}')
-    return await services.get_question_count_by_position(db, position_id)
+    return await services.get_questions_count_by_position(db, position_id)

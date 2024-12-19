@@ -78,7 +78,13 @@ async def delete_questions_by_position(db: Session, position_id: int) -> None:
     db.commit()
 
 
-async def get_question_count_by_position(db: Session, position_id: int) -> int:
+async def get_questions_by_position(db: Session, position_id: int) -> list[QuestionRead]:
+    logger.info(f"Getting questions for position with ID {position_id}")
+    q = select(QuestionModel).where(QuestionModel.position_id == position_id)  # noqa:E712
+    return db.exec(q).all()
+
+
+async def get_questions_count_by_position(db: Session, position_id: int) -> int:
     logger.info(f"Getting question count for position with ID {position_id}")
     q = select(func.count()).select_from(QuestionModel).where(QuestionModel.position_id == position_id)  # noqa:E712
     return db.exec(q).one()
